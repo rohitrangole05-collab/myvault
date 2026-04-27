@@ -2,694 +2,500 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GVAULT · Google Drive Storage</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>GVAULT</title>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0d1117">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Fira+Code&display=swap" rel="stylesheet">
 <style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg:   #0d1117;
-  --bg2:  #161b22;
-  --bg3:  #1c2128;
-  --bg4:  #21262d;
-  --b:    #21262d;
-  --b2:   #30363d;
-  --blue: #1a73e8;
-  --bl2:  #4d90fe;
-  --bdim: rgba(26,115,232,0.12);
-  --bglo: rgba(26,115,232,0.05);
-  --bbdr: rgba(26,115,232,0.25);
-  --grn:  #34a853;
-  --red:  #ea4335;
-  --yel:  #fbbc05;
-  --tx:   #e6edf3;
-  --tx2:  #7d8590;
-  --tx3:  #3d444d;
-  --sw:   228px;
+  --bg:#0d1117;--bg2:#161b22;--bg3:#1c2128;
+  --b:#21262d;--b2:#30363d;
+  --blue:#1a73e8;--bl2:#4d90fe;
+  --grn:#34a853;--red:#ea4335;--yel:#fbbc05;
+  --tx:#e6edf3;--tx2:#7d8590;--tx3:#3d444d;
 }
-*{margin:0;padding:0;box-sizing:border-box;}
-html,body{height:100%;background:var(--bg);color:var(--tx);font-family:'Outfit',sans-serif;overflow:hidden;}
-::-webkit-scrollbar{width:4px;height:4px;}
-::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px;}
-.app{display:flex;height:100vh;}
+html,body{height:100%;background:var(--bg);color:var(--tx);font-family:'Outfit',sans-serif;overflow:hidden}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px}
 
-/* ─── LOGIN SCREEN ─── */
-#login-screen{
-  position:fixed;inset:0;background:var(--bg);
-  display:flex;align-items:center;justify-content:center;
-  z-index:900;
-}
-.login-card{
-  width:360px;text-align:center;
-  background:var(--bg2);border:1px solid var(--b2);
-  border-radius:18px;padding:40px 32px;
-  box-shadow:0 24px 80px rgba(0,0,0,0.6);
-}
-.login-brand{
-  font-family:'Bebas Neue',sans-serif;font-size:44px;
-  letter-spacing:6px;line-height:1;
-  background:linear-gradient(135deg,#fff 0%,var(--blue) 60%,var(--bl2) 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;margin-bottom:4px;
-}
-.login-sub{font-size:11px;color:var(--tx3);font-family:'Fira Code',monospace;letter-spacing:3px;margin-bottom:28px;}
-.login-desc{font-size:13px;color:var(--tx2);line-height:1.65;margin-bottom:28px;}
-.login-desc strong{color:var(--tx);}
-.gbtn{
-  width:100%;padding:12px 20px;border-radius:10px;
-  background:#fff;border:none;cursor:pointer;
-  display:flex;align-items:center;gap:12px;justify-content:center;
-  font-size:14px;font-weight:600;color:#1f1f1f;
-  font-family:'Outfit',sans-serif;
-  transition:all .15s;box-shadow:0 2px 8px rgba(0,0,0,0.3);
-}
-.gbtn:hover{box-shadow:0 4px 16px rgba(0,0,0,0.5);transform:translateY(-1px);}
-.gbtn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
-.glogo{width:20px;height:20px;}
-.login-note{font-size:10px;color:var(--tx3);margin-top:16px;line-height:1.6;}
-.login-note a{color:var(--blue);text-decoration:none;}
-.login-note a:hover{text-decoration:underline;}
+/* ── SPLASH ── */
+#splash{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:16px}
+.sp-logo{font-size:52px;font-weight:700;letter-spacing:8px;background:linear-gradient(135deg,#fff,var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sp-sub{font-size:11px;color:var(--tx3);font-family:'Fira Code',monospace;letter-spacing:3px}
+.spinner{width:30px;height:30px;border:2px solid var(--b2);border-top-color:var(--blue);border-radius:50%;animation:spin .9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sp-msg{font-size:13px;color:var(--tx2);text-align:center;padding:0 30px}
 
-/* ─── SIDEBAR ─── */
-.sb{
-  width:var(--sw);min-width:var(--sw);
-  background:var(--bg2);border-right:1px solid var(--b);
-  display:flex;flex-direction:column;
-}
-.sb-top{
-  padding:16px 14px;border-bottom:1px solid var(--b);
-}
-.brand{
-  font-family:'Bebas Neue',sans-serif;font-size:26px;
-  letter-spacing:5px;
-  background:linear-gradient(135deg,#fff 0%,var(--blue) 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;
-}
-.brand-sub{font-size:9px;color:var(--tx3);font-family:'Fira Code',monospace;letter-spacing:2px;margin-top:1px;}
+/* ── LOGIN ── */
+#login{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:900}
+.lbox{background:var(--bg2);border:1px solid var(--b2);border-radius:20px;padding:36px 28px;width:320px;max-width:94vw;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.7)}
+.l-logo{font-size:42px;font-weight:700;letter-spacing:6px;background:linear-gradient(135deg,#fff,var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
+.l-sub{font-size:10px;color:var(--tx3);font-family:'Fira Code',monospace;letter-spacing:3px;margin-bottom:20px}
+.l-desc{font-size:13px;color:var(--tx2);line-height:1.6;margin-bottom:22px}
+.gbtn{width:100%;padding:13px;border-radius:11px;background:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:11px;font-size:15px;font-weight:600;color:#1f1f1f;transition:.15s;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.gbtn:active{transform:scale(.97)}
+.gbtn:disabled{opacity:.4;cursor:default}
+.g-ico{width:22px;height:22px;flex-shrink:0}
+.l-note{font-size:11px;color:var(--tx3);margin-top:14px;line-height:1.7}
+.l-note a{color:var(--blue);text-decoration:none;font-weight:500}
+#cid-box{margin-top:14px;text-align:left;display:none}
+.lbl{display:block;font-size:9px;font-family:'Fira Code',monospace;color:var(--tx3);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px}
+.inp{width:100%;padding:10px;background:var(--bg3);border:1px solid var(--b);border-radius:8px;color:var(--tx);font-size:12px;font-family:'Fira Code',monospace;outline:none;margin-bottom:8px}
+.inp:focus{border-color:var(--blue)}
 
-.user-bar{
-  display:flex;align-items:center;gap:9px;
-  padding:10px 14px;border-bottom:1px solid var(--b);
-  background:var(--bg3);
-}
-.uavatar{
-  width:30px;height:30px;border-radius:50%;
-  background:var(--blue);display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:700;color:#fff;overflow:hidden;flex-shrink:0;
-}
-.uavatar img{width:100%;height:100%;object-fit:cover;}
-.uname{font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.uemail{font-size:9px;color:var(--tx3);font-family:'Fira Code',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.signout-btn{
-  margin-left:auto;padding:3px 7px;border-radius:5px;
-  background:transparent;border:1px solid var(--b2);
-  color:var(--tx2);font-size:9px;cursor:pointer;
-  font-family:'Outfit',sans-serif;transition:.12s;flex-shrink:0;
-}
-.signout-btn:hover{border-color:var(--red);color:var(--red);}
+/* ── LAYOUT ── */
+.app{display:flex;height:100vh}
 
-.sb-nav{flex:1;overflow-y:auto;padding:6px 0;}
-.ng{font-size:8px;font-family:'Fira Code',monospace;letter-spacing:3px;color:var(--tx3);padding:12px 14px 4px;text-transform:uppercase;}
-.ni{
-  display:flex;align-items:center;gap:8px;
-  padding:7px 14px;cursor:pointer;
-  border-left:2px solid transparent;
-  font-size:12px;color:var(--tx2);
-  transition:.12s;user-select:none;
-}
-.ni:hover{background:var(--bglo);color:var(--tx);}
-.ni.on{background:var(--bdim);color:var(--blue);border-left-color:var(--blue);}
-.ni svg{width:14px;height:14px;flex-shrink:0;}
-.nbg{
-  margin-left:auto;font-size:9px;font-family:'Fira Code',monospace;
-  color:var(--tx3);background:var(--bg3);
-  padding:1px 5px;border-radius:5px;min-width:18px;text-align:center;
-}
-.ni.on .nbg{background:var(--bdim);color:var(--blue);}
+/* ── SIDEBAR ── */
+.sb{width:210px;min-width:210px;background:var(--bg2);border-right:1px solid var(--b);display:flex;flex-direction:column}
+.sb-top{padding:14px 12px;border-bottom:1px solid var(--b)}
+.sb-logo{font-size:22px;font-weight:700;letter-spacing:5px;background:linear-gradient(135deg,#fff,var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sb-tagline{font-size:8px;color:var(--tx3);font-family:'Fira Code',monospace;letter-spacing:2px}
+.ubar{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--b);background:var(--bg3)}
+.uav{width:28px;height:28px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;overflow:hidden;flex-shrink:0}
+.uav img{width:100%;height:100%;object-fit:cover}
+.uinfo{flex:1;min-width:0}
+.uname{font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.uemail{font-size:9px;color:var(--tx3);font-family:'Fira Code',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.out-btn{padding:3px 7px;border-radius:5px;border:1px solid var(--b2);background:none;color:var(--tx3);font-size:9px;cursor:pointer;flex-shrink:0}
+.out-btn:hover{border-color:var(--red);color:var(--red)}
+.sb-nav{flex:1;overflow-y:auto;padding:6px 0}
+.ng{font-size:8px;font-family:'Fira Code',monospace;letter-spacing:3px;color:var(--tx3);padding:12px 12px 4px;text-transform:uppercase}
+.ni{display:flex;align-items:center;gap:7px;padding:8px 12px;cursor:pointer;border-left:2px solid transparent;font-size:12px;color:var(--tx2);transition:.1s;user-select:none}
+.ni:active,.ni:hover{background:rgba(26,115,232,.05);color:var(--tx)}
+.ni.on{background:rgba(26,115,232,.12);color:var(--blue);border-left-color:var(--blue)}
+.ni svg{width:13px;height:13px;flex-shrink:0}
+.nbadge{margin-left:auto;font-size:9px;font-family:'Fira Code',monospace;color:var(--tx3);background:var(--bg3);padding:1px 5px;border-radius:5px;min-width:18px;text-align:center}
+.ni.on .nbadge{background:rgba(26,115,232,.15);color:var(--blue)}
+.sb-foot{padding:9px 10px;border-top:1px solid var(--b)}
+.stor-row{display:flex;justify-content:space-between;font-size:9px;color:var(--tx3);font-family:'Fira Code',monospace;margin-bottom:4px}
+.stor-bar{height:3px;background:var(--b2);border-radius:2px;margin-bottom:8px;overflow:hidden}
+.stor-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--bl2));width:0%;transition:width .5s}
+.sb-btn{width:100%;padding:7px 10px;border:1px solid var(--b2);background:var(--bg3);color:var(--tx2);border-radius:7px;cursor:pointer;font-size:11px;font-family:'Outfit',sans-serif;display:flex;align-items:center;gap:6px;margin-bottom:4px;transition:.1s}
+.sb-btn:hover{border-color:var(--blue);color:var(--blue)}
+.sb-btn svg{width:11px;height:11px;flex-shrink:0}
 
-.sb-foot{padding:10px 12px;border-top:1px solid var(--b);}
-.quota-label{display:flex;justify-content:space-between;font-size:9px;color:var(--tx3);font-family:'Fira Code',monospace;margin-bottom:4px;}
-.quota-bar{height:3px;background:var(--b2);border-radius:2px;margin-bottom:10px;overflow:hidden;}
-.quota-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--bl2));width:0%;transition:width .6s;border-radius:2px;}
-.sb-act{
-  width:100%;padding:7px 10px;border:1px solid var(--b2);
-  background:var(--bg3);color:var(--tx2);border-radius:7px;
-  cursor:pointer;font-size:11px;font-family:'Outfit',sans-serif;
-  display:flex;align-items:center;gap:6px;margin-bottom:4px;transition:.12s;
-}
-.sb-act:hover{border-color:var(--blue);color:var(--blue);}
-.sb-act svg{width:12px;height:12px;flex-shrink:0;}
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.bar{padding:11px 16px;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:9px;background:var(--bg2);flex-shrink:0}
+.bar-title{font-size:16px;font-weight:700;min-width:90px;white-space:nowrap}
+.search-wrap{flex:1;max-width:280px;position:relative}
+.search-wrap svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);width:12px;height:12px;color:var(--tx3);pointer-events:none}
+.search{width:100%;padding:7px 10px 7px 28px;background:var(--bg3);border:1px solid var(--b);border-radius:7px;color:var(--tx);font-size:12px;font-family:'Outfit',sans-serif;outline:none}
+.search:focus{border-color:var(--blue)}
+.search::placeholder{color:var(--tx3)}
+.bar-right{display:flex;gap:5px;margin-left:auto;align-items:center}
+.btn{padding:7px 13px;border-radius:7px;border:none;cursor:pointer;font-size:12px;font-family:'Outfit',sans-serif;font-weight:600;display:flex;align-items:center;gap:5px;transition:.1s;white-space:nowrap}
+.btn svg{width:12px;height:12px;flex-shrink:0}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-blue:hover{background:var(--bl2)}
+.btn-ghost{background:transparent;color:var(--tx2);border:1px solid var(--b2)}
+.btn-ghost:hover{border-color:var(--blue);color:var(--blue)}
+.btn-red{background:rgba(234,67,53,.1);color:var(--red);border:1px solid rgba(234,67,53,.25)}
+.btn-red:hover{background:rgba(234,67,53,.2)}
+.btn-sm{padding:5px 10px;font-size:11px}
+.ico-btn{padding:7px;border-radius:7px;background:var(--bg3);border:1px solid var(--b);color:var(--tx2);cursor:pointer;transition:.1s;display:flex;align-items:center;justify-content:center}
+.ico-btn:hover{border-color:var(--blue);color:var(--blue)}
+.ico-btn.active{border-color:var(--blue);color:var(--blue);background:rgba(26,115,232,.12)}
+.ico-btn svg{width:13px;height:13px}
 
-/* ─── MAIN ─── */
-.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
-.topbar{
-  padding:12px 20px;border-bottom:1px solid var(--b);
-  display:flex;align-items:center;gap:11px;
-  background:var(--bg2);flex-shrink:0;
-}
-.pg-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;min-width:110px;white-space:nowrap;}
-.srch{flex:1;max-width:340px;position:relative;}
-.srch svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:13px;height:13px;color:var(--tx3);pointer-events:none;}
-.srch input{
-  width:100%;padding:7px 10px 7px 30px;
-  background:var(--bg3);border:1px solid var(--b);
-  border-radius:7px;color:var(--tx);font-size:12px;
-  font-family:'Outfit',sans-serif;outline:none;transition:.12s;
-}
-.srch input:focus{border-color:var(--blue);}
-.srch input::placeholder{color:var(--tx3);}
+/* ── CONTENT ── */
+.content{flex:1;overflow-y:auto;padding:16px}
 
-.top-r{display:flex;gap:6px;margin-left:auto;align-items:center;}
-.btn{
-  padding:7px 14px;border-radius:7px;border:none;cursor:pointer;
-  font-size:12px;font-family:'Outfit',sans-serif;font-weight:600;
-  display:flex;align-items:center;gap:5px;transition:.12s;white-space:nowrap;
-}
-.btn svg{width:13px;height:13px;flex-shrink:0;}
-.btn-b{background:var(--blue);color:#fff;}
-.btn-b:hover{background:var(--bl2);}
-.btn-o{background:transparent;color:var(--tx2);border:1px solid var(--b2);}
-.btn-o:hover{border-color:var(--blue);color:var(--blue);}
-.btn-r2{background:rgba(234,67,53,.1);color:var(--red);border:1px solid rgba(234,67,53,.25);}
-.btn-r2:hover{background:rgba(234,67,53,.2);}
-.btn-sm{padding:5px 10px;font-size:11px;}
-.ib{
-  padding:6px;border-radius:7px;background:var(--bg3);
-  border:1px solid var(--b);color:var(--tx2);cursor:pointer;
-  transition:.12s;display:flex;align-items:center;justify-content:center;
-}
-.ib:hover{border-color:var(--blue);color:var(--blue);}
-.ib.on{border-color:var(--blue);color:var(--blue);background:var(--bdim);}
-.ib svg{width:14px;height:14px;}
-
-/* ─── CONTENT ─── */
-.content{flex:1;overflow-y:auto;padding:20px;}
-
-/* SYNC badge */
-.sync-bar{
-  display:flex;align-items:center;gap:8px;
-  padding:7px 12px;background:var(--bdim);
-  border:1px solid var(--bbdr);border-radius:7px;
-  font-size:11px;margin-bottom:14px;color:var(--blue);
-}
-.sync-bar svg{width:13px;height:13px;flex-shrink:0;}
-.sync-bar span{flex:1;}
-.sync-bar .sbtn{font-size:10px;padding:3px 8px;border-radius:5px;background:var(--blue);color:#fff;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-weight:600;}
+/* Drive status bar */
+.drive-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;font-size:12px;margin-bottom:13px;border:1px solid}
+.drive-bar.connected{background:rgba(52,168,83,.08);border-color:rgba(52,168,83,.3);color:var(--grn)}
+.drive-bar.disconnected{background:rgba(26,115,232,.08);border-color:rgba(26,115,232,.25);color:var(--blue)}
+.drive-bar svg{width:13px;height:13px;flex-shrink:0}
+.drive-bar span{flex:1;font-size:11px}
+.drive-bar-btn{padding:3px 9px;border-radius:5px;border:none;cursor:pointer;font-size:10px;font-weight:600;font-family:'Outfit',sans-serif}
+.drive-bar.connected .drive-bar-btn{background:rgba(52,168,83,.2);color:var(--grn)}
+.drive-bar.disconnected .drive-bar-btn{background:var(--blue);color:#fff}
 
 /* Drop zone */
-.dz{
-  border:2px dashed var(--b2);border-radius:12px;
-  padding:26px 20px;text-align:center;margin-bottom:16px;
-  cursor:pointer;background:var(--bg2);transition:.18s;
-}
-.dz:hover,.dz.ov{border-color:var(--blue);background:var(--bdim);}
-.dz em{font-size:28px;display:block;margin-bottom:8px;}
-.dz h3{font-size:13px;font-weight:600;margin-bottom:4px;}
-.dz p{font-size:11px;color:var(--tx3);}
+.dropzone{border:2px dashed var(--b2);border-radius:12px;padding:26px;text-align:center;margin-bottom:14px;cursor:pointer;background:var(--bg2);transition:.15s}
+.dropzone:hover,.dropzone.drag{border-color:var(--blue);background:rgba(26,115,232,.07)}
+.dropzone-icon{font-size:28px;margin-bottom:8px}
+.dropzone h3{font-size:13px;font-weight:600;margin-bottom:4px}
+.dropzone p{font-size:11px;color:var(--tx3)}
 
-.fm{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;}
-.fm-l{font-size:10px;color:var(--tx3);font-family:'Fira Code',monospace;}
-.vsw{display:flex;gap:3px;}
+/* File list header */
+.list-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.list-count{font-size:10px;color:var(--tx3);font-family:'Fira Code',monospace}
+.view-btns{display:flex;gap:3px}
 
-/* Grid */
-.fg{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:9px;}
-.fg.ls{grid-template-columns:1fr;gap:3px;}
+/* ── FILE GRID ── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:9px}
+.grid.list-mode{grid-template-columns:1fr;gap:3px}
 
-.fc{
-  background:var(--bg2);border:1px solid var(--b);border-radius:10px;
-  overflow:hidden;cursor:pointer;transition:.18s;position:relative;
-}
-.fc:hover{border-color:var(--b2);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.5);}
+/* FILE CARD — GRID */
+.card{background:var(--bg2);border:1px solid var(--b);border-radius:10px;overflow:hidden;transition:.15s;position:relative}
+.card:hover{border-color:var(--b2);box-shadow:0 6px 20px rgba(0,0,0,.4)}
+.card-thumb{height:100px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden;position:relative}
+.card-thumb img,.card-thumb video{width:100%;height:100%;object-fit:cover}
+.card-ext{position:absolute;bottom:4px;right:4px;font-size:7px;font-family:'Fira Code',monospace;background:rgba(0,0,0,.85);color:var(--blue);padding:2px 4px;border-radius:3px;text-transform:uppercase}
+.cloud-icon{position:absolute;top:5px;right:5px;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px}
+.cloud-icon.synced{background:rgba(52,168,83,.9);color:#fff}
+.cloud-icon.local{background:rgba(50,55,65,.9);color:var(--tx3)}
+.card-info{padding:8px 9px 4px}
+.card-name{font-size:10px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.card-meta{font-size:9px;color:var(--tx3);font-family:'Fira Code',monospace;margin-bottom:7px}
 
-.fth{
-  height:100px;background:var(--bg3);
-  display:flex;align-items:center;justify-content:center;
-  font-size:30px;overflow:hidden;position:relative;
-}
-.fth img,.fth video{width:100%;height:100%;object-fit:cover;}
-.ext-lbl{
-  position:absolute;bottom:4px;right:4px;
-  font-size:7px;font-family:'Fira Code',monospace;
-  background:rgba(0,0,0,.82);color:var(--blue);
-  padding:2px 4px;border-radius:3px;text-transform:uppercase;
-}
-.fb{padding:8px 10px;}
-.fn{font-size:10px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px;}
-.fm2{font-size:9px;color:var(--tx3);font-family:'Fira Code',monospace;}
+/* ── ACTION BUTTONS — always visible ── */
+.card-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;padding:0 8px 8px}
+.action-btn{padding:5px 0;border-radius:6px;border:1px solid var(--b);background:var(--bg3);color:var(--tx2);font-size:9px;font-weight:600;font-family:'Outfit',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px;transition:.1s}
+.action-btn svg{width:9px;height:9px;flex-shrink:0}
+.action-btn.view:hover,.action-btn.view:active{background:rgba(26,115,232,.12);border-color:var(--blue);color:var(--blue)}
+.action-btn.save:hover,.action-btn.save:active{background:rgba(52,168,83,.12);border-color:var(--grn);color:var(--grn)}
+.action-btn.remove:hover,.action-btn.remove:active{background:rgba(234,67,53,.12);border-color:var(--red);color:var(--red)}
 
-.fhov{position:absolute;top:4px;left:4px;display:none;gap:3px;}
-.fc:hover .fhov{display:flex;}
+/* FILE CARD — LIST MODE */
+.grid.list-mode .card{display:flex;align-items:center;padding:0;border-radius:8px}
+.grid.list-mode .card-thumb{width:42px;height:42px;min-width:42px;border-radius:8px 0 0 8px;font-size:18px}
+.grid.list-mode .card-thumb .card-ext,.grid.list-mode .cloud-icon{display:none}
+.grid.list-mode .card-info{flex:1;padding:8px 10px;display:flex;align-items:center;gap:8px}
+.grid.list-mode .card-name{flex:1;font-size:12px;margin:0}
+.grid.list-mode .card-meta{min-width:65px;text-align:right;margin:0;flex-shrink:0}
+.grid.list-mode .card-actions{grid-template-columns:auto auto auto;padding:6px 8px 6px 0;gap:3px}
+.grid.list-mode .action-btn{padding:6px;font-size:0}
+.grid.list-mode .action-btn svg{width:11px;height:11px;margin:0}
 
-.fa{
-  width:22px;height:22px;border:none;border-radius:5px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;transition:.1s;
-}
-.fa svg{width:10px;height:10px;}
-.fa-d{background:rgba(234,67,53,.9);color:#fff;}
-.fa-dl{background:rgba(0,0,0,.8);color:var(--tx);backdrop-filter:blur(6px);}
-.fa-dl:hover{color:var(--blue);}
+.empty-state{text-align:center;padding:50px 20px;color:var(--tx3)}
+.empty-state em{font-size:38px;display:block;opacity:.3;margin-bottom:12px}
+.empty-state h3{font-size:14px;color:var(--tx2);margin-bottom:5px}
+.empty-state p{font-size:12px}
 
-.cloud-dot{
-  position:absolute;top:4px;right:4px;
-  width:14px;height:14px;border-radius:50%;font-size:7px;
-  display:flex;align-items:center;justify-content:center;
-}
-.cloud-dot.up{background:rgba(52,168,83,.9);color:#fff;}
-.cloud-dot.lo{background:rgba(61,68,77,.9);color:var(--tx3);}
+/* ── NOTES ── */
+.notes-layout{display:flex;gap:14px;height:calc(100vh - 112px)}
+.notes-list{width:210px;min-width:210px;display:flex;flex-direction:column;gap:5px;overflow-y:auto}
+.note-card{padding:10px 11px;border-radius:8px;border:1px solid var(--b);background:var(--bg2);cursor:pointer;transition:.1s}
+.note-card:hover{border-color:var(--b2)}
+.note-card.active{border-color:var(--blue);background:rgba(26,115,232,.1)}
+.note-title{font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.note-preview{font-size:10px;color:var(--tx3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.note-date{font-size:8px;color:var(--tx3);font-family:'Fira Code',monospace;margin-top:4px}
+.note-editor{flex:1;background:var(--bg2);border:1px solid var(--b);border-radius:11px;overflow:hidden;display:flex;flex-direction:column}
+.note-empty{flex:1;display:flex;align-items:center;justify-content:center;color:var(--tx3);font-size:13px}
+.note-active{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.note-top{padding:11px 14px;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:8px}
+.note-title-inp{flex:1;background:none;border:none;color:var(--tx);font-size:17px;font-weight:700;outline:none;font-family:'Outfit',sans-serif}
+.note-title-inp::placeholder{color:var(--tx3)}
+.note-body{flex:1;padding:14px;background:none;border:none;color:var(--tx);font-size:13px;line-height:1.8;resize:none;outline:none;font-family:'Outfit',sans-serif}
+.note-body::placeholder{color:var(--tx3)}
+.note-footer{padding:6px 14px;border-top:1px solid var(--b);font-size:9px;color:var(--tx3);font-family:'Fira Code',monospace}
 
-/* List */
-.fg.ls .fc{display:flex;align-items:center;padding:7px 12px;border-radius:7px;border-radius:8px;}
-.fg.ls .fth{width:34px;height:34px;min-width:34px;border-radius:6px;font-size:16px;margin-right:10px;}
-.fg.ls .fth .ext-lbl{display:none;}
-.fg.ls .fb{flex:1;padding:0;display:flex;align-items:center;gap:10px;}
-.fg.ls .fn{flex:1;font-size:12px;margin-bottom:0;}
-.fg.ls .fm2{min-width:80px;text-align:right;}
-.fg.ls .fhov{position:static;display:flex;margin-left:6px;}
-.fg.ls .fc:hover .fhov{display:flex;}
-.fg.ls .ls-ext{font-size:8px;font-family:'Fira Code',monospace;background:var(--bg3);color:var(--tx3);padding:1px 5px;border-radius:4px;min-width:30px;text-align:center;}
+/* ── CLOUD PAGE ── */
+.cloud-page{max-width:500px}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:13px}
+.stat{padding:11px;background:var(--bg3);border:1px solid var(--b);border-radius:8px;text-align:center}
+.stat-num{font-size:22px;font-weight:700;color:var(--blue)}
+.stat-lbl{font-size:8px;color:var(--tx3);font-family:'Fira Code',monospace;margin-top:2px}
+.quota-box{background:var(--bg3);border:1px solid var(--b);border-radius:9px;padding:12px;margin-bottom:13px}
+.quota-row{display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px}
+.quota-row span:first-child{color:var(--tx2)}
+.quota-row span:last-child{color:var(--blue);font-family:'Fira Code',monospace}
+.quota-bar{height:4px;background:var(--b2);border-radius:2px;overflow:hidden}
+.quota-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--bl2));transition:width .5s}
+.conn-status{display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--bg3);border:1px solid var(--b);border-radius:8px;font-size:12px;margin-bottom:12px}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot.on{background:var(--grn);box-shadow:0 0 6px var(--grn)}
+.dot.off{background:var(--tx3)}
+.cloud-btns{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:13px}
+.prog-box{display:none;margin-bottom:13px}
+.prog-head{display:flex;justify-content:space-between;margin-bottom:4px}
+.prog-lbl{font-size:11px;color:var(--tx2)}
+.prog-pct{font-size:10px;color:var(--blue);font-family:'Fira Code',monospace}
+.prog-track{height:4px;background:var(--b2);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--bl2));width:0%;transition:width .2s}
+.divider{height:1px;background:var(--b);margin:16px 0}
+.section-head{font-size:15px;font-weight:700;margin-bottom:9px;display:flex;align-items:center;gap:7px}
+.section-desc{font-size:12px;color:var(--tx2);line-height:1.7;margin-bottom:13px}
+.section-desc a{color:var(--blue);text-decoration:none;font-weight:500}
+.section-desc code{background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:10px;font-family:'Fira Code',monospace;color:var(--yel)}
+.steps-list{margin-bottom:14px}
+.step-row{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--b)}
+.step-row:last-child{border-bottom:none}
+.step-num{width:20px;height:20px;border-radius:50%;background:rgba(26,115,232,.12);border:1px solid rgba(26,115,232,.3);display:flex;align-items:center;justify-content:center;font-size:9px;font-family:'Fira Code',monospace;color:var(--blue);flex-shrink:0;margin-top:1px}
+.step-text{font-size:12px;color:var(--tx2);line-height:1.6}
+.step-text strong{color:var(--tx)}
+.step-text a{color:var(--blue);text-decoration:none}
+.step-text code{background:var(--bg3);padding:1px 5px;border-radius:3px;font-size:10px;font-family:'Fira Code',monospace;color:var(--yel)}
+.field-group{margin-bottom:10px}
+.field-label{display:block;font-size:8px;font-family:'Fira Code',monospace;color:var(--tx3);text-transform:uppercase;letter-spacing:2px;margin-bottom:4px}
+.field-input{width:100%;padding:9px 11px;background:var(--bg3);border:1px solid var(--b);border-radius:7px;color:var(--tx);font-size:12px;font-family:'Fira Code',monospace;outline:none;transition:.1s}
+.field-input:focus{border-color:var(--blue)}
+.field-input::placeholder{color:var(--tx3)}
 
-.empty{text-align:center;padding:50px 20px;color:var(--tx3);}
-.empty em{font-size:38px;display:block;opacity:.3;margin-bottom:12px;}
-.empty h3{font-size:13px;color:var(--tx2);margin-bottom:5px;}
-.empty p{font-size:11px;}
+/* ── MODALS ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(8px);z-index:500;display:flex;align-items:center;justify-content:center;animation:fadeIn .15s}
+.modal{background:var(--bg2);border:1px solid var(--b2);border-radius:14px;padding:22px;max-width:460px;width:92%;max-height:90vh;overflow-y:auto;animation:slideUp .18s}
+.modal.wide{max-width:780px}
+.modal.narrow{max-width:310px}
+.modal-title{font-size:16px;font-weight:700;margin-bottom:4px}
+.modal-btns{display:flex;gap:6px;margin-top:15px;justify-content:flex-end}
+.preview-area{display:flex;align-items:center;justify-content:center;min-height:240px;background:var(--bg3);border-radius:9px;overflow:hidden;margin:11px 0}
+.preview-area img,.preview-area video{max-width:100%;max-height:56vh;object-fit:contain}
+.preview-area iframe{width:100%;height:54vh;border:none}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
 
-/* ─── NOTES ─── */
-.nw{display:flex;gap:16px;height:calc(100vh - 122px);}
-.ns{width:238px;min-width:238px;display:flex;flex-direction:column;gap:5px;overflow-y:auto;}
-.nc{padding:10px 11px;border-radius:7px;border:1px solid var(--b);background:var(--bg2);cursor:pointer;transition:.12s;}
-.nc:hover{border-color:var(--b2);}
-.nc.on{border-color:var(--blue);background:var(--bdim);}
-.nc-t{font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px;}
-.nc-p{font-size:10px;color:var(--tx3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.nc-d{font-size:8px;color:var(--tx3);font-family:'Fira Code',monospace;margin-top:4px;}
-.ne{flex:1;background:var(--bg2);border:1px solid var(--b);border-radius:11px;overflow:hidden;display:flex;flex-direction:column;}
-.n-idle{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--tx3);font-size:12px;}
-.n-idle svg{opacity:.2;}
-.ned{flex:1;display:flex;flex-direction:column;overflow:hidden;}
-.ned-top{padding:10px 14px;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:8px;}
-.ned-ti{flex:1;background:none;border:none;color:var(--tx);font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;outline:none;}
-.ned-ti::placeholder{color:var(--tx3);}
-.ned-body{flex:1;padding:14px;background:none;border:none;color:var(--tx);font-family:'Outfit',sans-serif;font-size:13px;line-height:1.8;resize:none;outline:none;}
-.ned-body::placeholder{color:var(--tx3);}
-.ned-foot{padding:6px 14px;border-top:1px solid var(--b);font-size:9px;color:var(--tx3);font-family:'Fira Code',monospace;}
-
-/* ─── CLOUD SECTION ─── */
-.cl-wrap{max-width:560px;}
-.cl-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
-.csc{padding:12px;background:var(--bg3);border:1px solid var(--b);border-radius:8px;text-align:center;}
-.csn{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;color:var(--blue);}
-.csl{font-size:8px;color:var(--tx3);font-family:'Fira Code',monospace;margin-top:2px;}
-
-.quota-card{
-  background:var(--bg3);border:1px solid var(--b);border-radius:9px;
-  padding:14px;margin-bottom:14px;
-}
-.qrow{display:flex;justify-content:space-between;font-size:11px;margin-bottom:6px;}
-.qrow span:first-child{color:var(--tx2);}
-.qrow span:last-child{color:var(--blue);font-family:'Fira Code',monospace;}
-.qbar{height:5px;background:var(--b2);border-radius:3px;overflow:hidden;}
-.qfill{height:100%;background:linear-gradient(90deg,var(--blue),var(--bl2));border-radius:3px;transition:width .5s;}
-
-.cl-status{
-  display:flex;align-items:center;gap:8px;
-  padding:8px 12px;background:var(--bg3);border:1px solid var(--b);border-radius:7px;
-  font-size:11px;margin-bottom:12px;
-}
-.sdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-.sdot.ok{background:var(--grn);box-shadow:0 0 5px var(--grn);}
-.sdot.off{background:var(--tx3);}
-
-.cl-acts{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px;}
-
-.pw{display:none;margin-bottom:14px;}
-.phd{display:flex;justify-content:space-between;margin-bottom:4px;}
-.pl{font-size:11px;color:var(--tx2);}
-.pp{font-size:10px;color:var(--blue);font-family:'Fira Code',monospace;}
-.pt{height:4px;background:var(--b2);border-radius:2px;overflow:hidden;}
-.pf{height:100%;background:linear-gradient(90deg,var(--blue),var(--bl2));width:0%;transition:width .2s;border-radius:2px;}
-
-.divr{height:1px;background:var(--b);margin:18px 0;}
-.sett-title{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:2px;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
-.sett-desc{font-size:12px;color:var(--tx2);line-height:1.7;margin-bottom:14px;}
-.sett-desc a{color:var(--blue);text-decoration:none;}
-.sett-desc a:hover{text-decoration:underline;}
-.sett-desc code{background:var(--bg3);padding:1px 5px;border-radius:4px;font-size:10px;font-family:'Fira Code',monospace;color:var(--yel);}
-
-.steps{margin-bottom:16px;}
-.step{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--b);}
-.step:last-child{border-bottom:none;}
-.step-n{
-  width:20px;height:20px;border-radius:50%;
-  background:var(--bdim);border:1px solid var(--bbdr);
-  display:flex;align-items:center;justify-content:center;
-  font-size:9px;font-family:'Fira Code',monospace;color:var(--blue);flex-shrink:0;margin-top:1px;
-}
-.step-body{font-size:12px;color:var(--tx2);line-height:1.55;}
-.step-body strong{color:var(--tx);}
-.step-body a{color:var(--blue);text-decoration:none;}
-.step-body a:hover{text-decoration:underline;}
-.step-body code{background:var(--bg3);padding:1px 5px;border-radius:4px;font-size:10px;font-family:'Fira Code',monospace;color:var(--yel);}
-
-.fg1{margin-bottom:10px;}
-.fl{display:block;font-size:8px;font-family:'Fira Code',monospace;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px;}
-.fi{
-  width:100%;padding:8px 10px;background:var(--bg3);border:1px solid var(--b);
-  border-radius:7px;color:var(--tx);font-size:12px;
-  font-family:'Fira Code',monospace;outline:none;transition:.12s;
-}
-.fi:focus{border-color:var(--blue);}
-.fi::placeholder{color:var(--tx3);}
-
-/* ─── OVERLAYS ─── */
-.ov2{
-  position:fixed;inset:0;background:rgba(0,0,0,.8);
-  backdrop-filter:blur(8px);z-index:500;
-  display:flex;align-items:center;justify-content:center;animation:fi .15s;
-}
-.modal{
-  background:var(--bg2);border:1px solid var(--b2);border-radius:14px;
-  padding:24px;max-width:500px;width:92%;max-height:90vh;overflow-y:auto;animation:su .18s;
-}
-.modal.lg{max-width:790px;}
-.modal.sm{max-width:330px;}
-.mh{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;}
-.mf{display:flex;gap:7px;margin-top:16px;justify-content:flex-end;}
-.pvb{display:flex;align-items:center;justify-content:center;min-height:250px;background:var(--bg3);border-radius:8px;overflow:hidden;margin:12px 0;}
-.pvb img,.pvb video{max-width:100%;max-height:58vh;object-fit:contain;}
-.pvb iframe{width:100%;height:56vh;border:none;}
-.hidden{display:none!important;}
-@keyframes fi{from{opacity:0}to{opacity:1}}
-@keyframes su{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
-
-/* ─── TOASTS ─── */
-.toasts{position:fixed;bottom:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:6px;}
-.toast{
-  padding:10px 14px;border-radius:8px;font-size:11px;font-weight:500;
-  background:var(--bg3);border:1px solid var(--b2);color:var(--tx);
-  display:flex;align-items:center;gap:8px;min-width:200px;
-  box-shadow:0 6px 24px rgba(0,0,0,.6);animation:sir .18s,fo .25s 2.8s forwards;
-}
-.toast.ok{border-color:var(--grn);}
-.toast.err{border-color:var(--red);}
-.toast.inf{border-color:var(--blue);}
-.tdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
-.toast.ok .tdot{background:var(--grn);}
-.toast.err .tdot{background:var(--red);}
-.toast.inf .tdot{background:var(--blue);}
-@keyframes sir{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
-@keyframes fo{from{opacity:1}to{opacity:0;pointer-events:none}}
+/* ── TOASTS ── */
+.toasts{position:fixed;bottom:18px;right:18px;z-index:9999;display:flex;flex-direction:column;gap:6px}
+.toast{padding:10px 14px;border-radius:8px;font-size:12px;font-weight:500;background:var(--bg2);color:var(--tx);display:flex;align-items:center;gap:8px;min-width:200px;box-shadow:0 4px 18px rgba(0,0,0,.6);border:1px solid var(--b2);animation:slideIn .2s,fadeOut .3s 2.7s forwards}
+.toast.ok{border-color:var(--grn)}
+.toast.err{border-color:var(--red)}
+.toast.info{border-color:var(--blue)}
+.toast-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.toast.ok .toast-dot{background:var(--grn)}
+.toast.err .toast-dot{background:var(--red)}
+.toast.info .toast-dot{background:var(--blue)}
+@keyframes slideIn{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes fadeOut{from{opacity:1}to{opacity:0;pointer-events:none}}
+.hidden{display:none!important}
 </style>
 </head>
 <body>
 
-<!-- ─── LOGIN SCREEN ─── -->
-<div id="login-screen">
-  <div class="login-card">
-    <div class="login-brand">GVAULT</div>
-    <div class="login-sub">powered by google drive</div>
-    <div class="login-desc">
-      Your personal file vault backed by <strong>Google Drive</strong>.<br>
-      Sign in to get <strong>15 GB free storage</strong> — photos, videos, documents, HTML files, and notes.
-    </div>
-    <button class="gbtn" id="signin-btn" onclick="startSignIn()" disabled>
-      <svg class="glogo" viewBox="0 0 48 48">
+<!-- SPLASH SCREEN -->
+<div id="splash">
+  <div class="sp-logo">GVAULT</div>
+  <div class="sp-sub">google drive · 15 gb free</div>
+  <div class="spinner"></div>
+  <div class="sp-msg" id="sp-msg">Starting up…</div>
+</div>
+
+<!-- LOGIN SCREEN -->
+<div id="login" class="hidden">
+  <div class="lbox">
+    <div class="l-logo">GVAULT</div>
+    <div class="l-sub">google drive · 15 gb free</div>
+    <div class="l-desc">Your personal file vault.<br><strong>Sign in once — logs in automatically</strong> every time after.</div>
+    <button class="gbtn" id="signin-btn" onclick="doSignIn()" disabled>
+      <svg class="g-ico" viewBox="0 0 48 48">
         <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.33 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/>
         <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
         <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
         <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.67 14.62 48 24 48z"/>
-        <path fill="none" d="M0 0h48v48H0z"/>
       </svg>
       Sign in with Google
     </button>
-    <div class="login-note">
-      ⚠️ Requires a Client ID from Google Cloud Console.<br>
-      <a href="#" onclick="document.getElementById('login-screen').classList.add('hidden');initApp();return false">Skip (offline mode only)</a>
-      &nbsp;·&nbsp;
-      <a href="#" onclick="showSetupHelp()">Setup guide ↓</a>
+    <div class="l-note">
+      First time? <a href="#" onclick="showCidBox();return false">Enter Client ID</a> &nbsp;·&nbsp;
+      <a href="#" onclick="useOffline();return false">Use offline only</a>
     </div>
-    <div id="clientid-row" style="margin-top:14px;display:none">
-      <label class="fl" style="text-align:left;display:block;margin-bottom:4px">Google OAuth Client ID</label>
-      <input class="fi" id="clientid-inp" placeholder="xxxx.apps.googleusercontent.com" style="margin-bottom:8px">
-      <button class="btn btn-b" style="width:100%;justify-content:center" onclick="saveClientId()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        Save & Authorize
-      </button>
+    <div id="cid-box">
+      <label class="lbl">Google OAuth Client ID</label>
+      <input class="inp" id="cid-inp" placeholder="xxxxxx.apps.googleusercontent.com">
+      <button class="btn btn-blue" style="width:100%;justify-content:center" onclick="saveCidAndSignIn()">Save Client ID &amp; Sign In</button>
     </div>
   </div>
 </div>
 
-<!-- ─── APP ─── -->
-<div class="app" id="main-app" style="opacity:0;pointer-events:none">
+<!-- MAIN APP -->
+<div class="app hidden" id="app">
 
   <!-- SIDEBAR -->
   <aside class="sb">
     <div class="sb-top">
-      <div class="brand">GVAULT</div>
-      <div class="brand-sub">google drive · 15 gb free</div>
+      <div class="sb-logo">GVAULT</div>
+      <div class="sb-tagline">google drive · 15 gb free</div>
     </div>
-    <div class="user-bar" id="user-bar">
-      <div class="uavatar" id="u-avatar">?</div>
-      <div style="flex:1;min-width:0">
+    <div class="ubar">
+      <div class="uav" id="u-av">?</div>
+      <div class="uinfo">
         <div class="uname" id="u-name">Not signed in</div>
-        <div class="uemail" id="u-email">Offline mode</div>
+        <div class="uemail" id="u-email">Offline</div>
       </div>
-      <button class="signout-btn" onclick="signOut()">Out</button>
+      <button class="out-btn" onclick="signOut()">Out</button>
     </div>
     <nav class="sb-nav">
       <div class="ng">Library</div>
-      <div class="ni on" data-s="all">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
-        All Files<span class="nbg" id="nb-all">0</span>
-      </div>
-      <div class="ni" data-s="photos">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-        Photos<span class="nbg" id="nb-photos">0</span>
-      </div>
-      <div class="ni" data-s="videos">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
-        Videos<span class="nbg" id="nb-videos">0</span>
-      </div>
-      <div class="ni" data-s="docs">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        Documents<span class="nbg" id="nb-docs">0</span>
-      </div>
-      <div class="ni" data-s="html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-        HTML Files<span class="nbg" id="nb-html">0</span>
-      </div>
-      <div class="ni" data-s="other">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-        Other<span class="nbg" id="nb-other">0</span>
-      </div>
+      <div class="ni on" data-sec="all"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>All Files<span class="nbadge" id="nb-all">0</span></div>
+      <div class="ni" data-sec="photos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Photos<span class="nbadge" id="nb-photos">0</span></div>
+      <div class="ni" data-sec="videos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>Videos<span class="nbadge" id="nb-videos">0</span></div>
+      <div class="ni" data-sec="docs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Documents<span class="nbadge" id="nb-docs">0</span></div>
+      <div class="ni" data-sec="html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>HTML Files<span class="nbadge" id="nb-html">0</span></div>
+      <div class="ni" data-sec="other"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Other<span class="nbadge" id="nb-other">0</span></div>
       <div class="ng">Workspace</div>
-      <div class="ni" data-s="notes">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-        Notes<span class="nbg" id="nb-notes">0</span>
-      </div>
+      <div class="ni" data-sec="notes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Notes<span class="nbadge" id="nb-notes">0</span></div>
       <div class="ng">Cloud</div>
-      <div class="ni" data-s="cloud">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
-        Cloud & Setup
-      </div>
+      <div class="ni" data-sec="cloud"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>Cloud &amp; Setup</div>
     </nav>
     <div class="sb-foot">
-      <div class="quota-label"><span>Drive Storage</span><span id="q-txt">— / 15 GB</span></div>
-      <div class="quota-bar"><div class="quota-fill" id="q-bar"></div></div>
-      <button class="sb-act" onclick="dlApp()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Download App Copy
-      </button>
-      <button class="sb-act" onclick="navigate('cloud')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-        Cloud Settings
-      </button>
+      <div class="stor-row"><span>Drive Storage</span><span id="stor-used">—</span></div>
+      <div class="stor-bar"><div class="stor-fill" id="stor-fill"></div></div>
+      <button class="sb-btn" onclick="downloadApp()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download App Copy</button>
     </div>
   </aside>
 
-  <!-- MAIN -->
+  <!-- MAIN PANEL -->
   <main class="main">
-    <div class="topbar">
-      <div class="pg-title" id="pg-title">All Files</div>
-      <div class="srch" id="srch-w">
+    <div class="bar">
+      <div class="bar-title" id="page-title">All Files</div>
+      <div class="search-wrap" id="search-wrap">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" id="q" placeholder="Search…" oninput="onQ(this.value)">
+        <input class="search" type="text" id="search-input" placeholder="Search files…" oninput="onSearch(this.value)">
       </div>
-      <div class="top-r">
-        <div class="vsw" id="vsw">
-          <button class="ib on" id="vg" onclick="setV('grid')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></button>
-          <button class="ib" id="vl" onclick="setV('list')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></button>
+      <div class="bar-right">
+        <div class="view-btns" id="view-btns">
+          <button class="ico-btn active" id="btn-grid" onclick="setView('grid')" title="Grid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></button>
+          <button class="ico-btn" id="btn-list" onclick="setView('list')" title="List"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></button>
         </div>
-        <button class="btn btn-b" id="add-btn" onclick="document.getElementById('fi').click()">
+        <button class="btn btn-blue" id="add-files-btn" onclick="document.getElementById('file-input').click()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           Add Files
         </button>
-        <button class="btn btn-o hidden" id="note-btn" onclick="newNote()">
+        <button class="btn btn-ghost hidden" id="new-note-btn" onclick="createNote()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           New Note
         </button>
-        <input type="file" id="fi" multiple style="display:none" onchange="onFiles(event)">
+        <input type="file" id="file-input" multiple style="display:none" onchange="handleFiles(event)">
       </div>
     </div>
 
     <div class="content" id="content">
 
-      <!-- FILES -->
-      <div id="s-files">
-        <div class="sync-bar" id="sync-bar">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-          <span id="sync-txt">Sign in to enable Google Drive sync</span>
-          <button class="sbtn" onclick="navigate('cloud')">Setup</button>
+      <!-- FILES SECTION -->
+      <div id="sec-files">
+        <div class="drive-bar disconnected" id="drive-status-bar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+          <span id="drive-status-txt">Not connected to Google Drive</span>
+          <button class="drive-bar-btn" onclick="goTo('cloud')">Setup</button>
         </div>
-        <div class="dz" id="dz" onclick="document.getElementById('fi').click()">
-          <em>📁</em>
-          <h3>Drop files here · click to browse</h3>
-          <p>Photos · Videos · Documents · HTML · Any file up to 1 GB each</p>
+        <div class="dropzone" id="dropzone" onclick="document.getElementById('file-input').click()">
+          <div class="dropzone-icon">📁</div>
+          <h3>Drop files here or tap to browse</h3>
+          <p>Photos · Videos · Documents · HTML · Any file up to 1 GB</p>
         </div>
-        <div class="fm">
-          <span class="fm-l" id="fcnt">0 files</span>
+        <div class="list-header">
+          <span class="list-count" id="file-count">0 files</span>
         </div>
-        <div class="fg" id="fg"></div>
-        <div class="empty hidden" id="femp">
+        <div class="grid" id="file-grid"></div>
+        <div class="empty-state hidden" id="empty-state">
           <em>📁</em>
           <h3>No files yet</h3>
-          <p>Drop files above or click Add Files</p>
+          <p>Tap Add Files or drop files here</p>
         </div>
       </div>
 
-      <!-- NOTES -->
-      <div id="s-notes" class="hidden">
-        <div class="nw">
-          <div class="ns">
-            <button class="btn btn-o btn-sm" style="width:100%;margin-bottom:6px;justify-content:center" onclick="newNote()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              New Note
-            </button>
-            <div id="nlist"></div>
+      <!-- NOTES SECTION -->
+      <div id="sec-notes" class="hidden">
+        <div class="notes-layout">
+          <div class="notes-list">
+            <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center;margin-bottom:6px" onclick="createNote()">+ New Note</button>
+            <div id="notes-list"></div>
           </div>
-          <div class="ne">
-            <div class="n-idle" id="n-idle">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:32px;height:32px"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-              Select or create a note
-            </div>
-            <div class="ned hidden" id="ned">
-              <div class="ned-top">
-                <input class="ned-ti" id="ntitle" type="text" placeholder="Note title…" oninput="saveNote()">
-                <button class="ib" onclick="delNote()" style="color:var(--red);border-color:rgba(234,67,53,.3)" title="Delete">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
-                </button>
+          <div class="note-editor">
+            <div class="note-empty" id="note-idle">Select or create a note</div>
+            <div class="note-active hidden" id="note-active">
+              <div class="note-top">
+                <input class="note-title-inp" id="note-title" type="text" placeholder="Title…" oninput="autoSaveNote()">
+                <button class="ico-btn" onclick="deleteNote()" style="color:var(--red);border-color:rgba(234,67,53,.3)" title="Delete note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
               </div>
-              <textarea class="ned-body" id="nbody" placeholder="Start writing…" oninput="saveNote()"></textarea>
-              <div class="ned-foot" id="nsaved">Saved</div>
+              <textarea class="note-body" id="note-body" placeholder="Start writing…" oninput="autoSaveNote()"></textarea>
+              <div class="note-footer" id="note-saved-indicator">Saved</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- CLOUD -->
-      <div id="s-cloud" class="hidden">
-        <div class="cl-wrap">
-          <div class="cl-stats">
-            <div class="csc"><div class="csn" id="bs-f">0</div><div class="csl">local files</div></div>
-            <div class="csc"><div class="csn" id="bs-s">0B</div><div class="csl">total size</div></div>
-            <div class="csc"><div class="csn" id="bs-n">0</div><div class="csl">notes</div></div>
-            <div class="csc"><div class="csn" id="bs-lb">—</div><div class="csl">last sync</div></div>
+      <!-- CLOUD SECTION -->
+      <div id="sec-cloud" class="hidden">
+        <div class="cloud-page">
+          <div class="stats-row">
+            <div class="stat"><div class="stat-num" id="stat-files">0</div><div class="stat-lbl">files</div></div>
+            <div class="stat"><div class="stat-num" id="stat-size">0B</div><div class="stat-lbl">size</div></div>
+            <div class="stat"><div class="stat-num" id="stat-notes">0</div><div class="stat-lbl">notes</div></div>
+            <div class="stat"><div class="stat-num" id="stat-backup">—</div><div class="stat-lbl">last sync</div></div>
           </div>
-
-          <div class="quota-card">
-            <div class="qrow"><span>Google Drive Usage</span><span id="qd-txt">Loading…</span></div>
-            <div class="qbar"><div class="qfill" id="qd-bar"></div></div>
+          <div class="quota-box">
+            <div class="quota-row"><span>Google Drive Storage</span><span id="quota-txt">—</span></div>
+            <div class="quota-bar"><div class="quota-fill" id="quota-fill"></div></div>
           </div>
-
-          <div class="cl-status">
-            <div class="sdot off" id="cs-dot"></div>
-            <span id="cs-txt">Not signed in to Google</span>
+          <div class="conn-status">
+            <div class="dot off" id="conn-dot"></div>
+            <span id="conn-txt">Not signed in to Google Drive</span>
           </div>
-
-          <div class="cl-acts">
-            <button class="btn btn-b" id="bk-btn" onclick="backupAll()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-              Backup to Google Drive
-            </button>
-            <button class="btn btn-o" id="rs-btn" onclick="restoreAll()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-              Restore from Drive
-            </button>
-            <button class="btn btn-o" onclick="dlApp()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Download App Copy
-            </button>
-            <button class="btn btn-r2 btn-sm" onclick="askClear()" style="margin-left:auto">Clear All Local</button>
+          <div class="cloud-btns">
+            <button class="btn btn-blue" id="backup-btn" onclick="doBackup()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Backup to Drive</button>
+            <button class="btn btn-ghost" id="restore-btn" onclick="doRestore()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>Restore from Drive</button>
+            <button class="btn btn-ghost" onclick="downloadApp()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download Copy</button>
+            <button class="btn btn-red btn-sm" onclick="confirmClearAll()" style="margin-left:auto">Clear Local</button>
           </div>
-
-          <div class="pw" id="pw">
-            <div class="phd"><span class="pl" id="pl">Working…</span><span class="pp" id="pp">0%</span></div>
-            <div class="pt"><div class="pf" id="pf"></div></div>
+          <div class="prog-box" id="prog-box">
+            <div class="prog-head"><span class="prog-lbl" id="prog-label">Working…</span><span class="prog-pct" id="prog-pct">0%</span></div>
+            <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
           </div>
-
-          <div class="divr"></div>
-
-          <!-- SETUP GUIDE -->
-          <div class="sett-title" id="setup-anchor">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-            Google Cloud Setup (One-Time)
+          <div class="divider"></div>
+          <div class="section-head" id="setup-anchor">⚙️ One-Time Google Setup</div>
+          <div class="section-desc">
+            You need a free <strong>Client ID</strong> from Google Cloud. This is done once — after that the app <strong>auto-logs in every time</strong>.<br><br>
+            Your GitHub Pages URL is: <code>https://le05-collab.github.io</code>
           </div>
-          <div class="sett-desc">
-            You need a free <strong>Google Cloud Client ID</strong> so this app can connect to your Google Drive securely using OAuth. Your files are stored in <em>your own</em> Drive account — this app never sees your data directly.
+          <div class="steps-list">
+            <div class="step-row"><div class="step-num">1</div><div class="step-text">Go to <a href="https://console.cloud.google.com" target="_blank">console.cloud.google.com</a> → create a project</div></div>
+            <div class="step-row"><div class="step-num">2</div><div class="step-text"><strong>APIs & Services → Library</strong> → search → enable <strong>Google Drive API</strong></div></div>
+            <div class="step-row"><div class="step-num">3</div><div class="step-text"><strong>OAuth consent screen → External</strong> → App name: GVAULT → add your Gmail as test user → Save</div></div>
+            <div class="step-row"><div class="step-num">4</div><div class="step-text"><strong>Credentials → + Create Credentials → OAuth client ID → Web application</strong></div></div>
+            <div class="step-row"><div class="step-num">5</div><div class="step-text">Authorized JavaScript origins → Add: <code>https://le05-collab.github.io</code> → Save → wait 5 min</div></div>
+            <div class="step-row"><div class="step-num">6</div><div class="step-text">Copy your <strong>Client ID</strong> (ends in <code>.apps.googleusercontent.com</code>) and paste below:</div></div>
           </div>
-          <div class="steps">
-            <div class="step"><div class="step-n">1</div><div class="step-body">Go to <a href="https://console.cloud.google.com" target="_blank">console.cloud.google.com</a> and create a new project (or select an existing one).</div></div>
-            <div class="step"><div class="step-n">2</div><div class="step-body">Go to <strong>APIs &amp; Services → Library</strong> → search for <strong>"Google Drive API"</strong> → Enable it.</div></div>
-            <div class="step"><div class="step-n">3</div><div class="step-body">Go to <strong>APIs &amp; Services → OAuth consent screen</strong> → select <strong>External</strong> → fill in app name → add yourself as a test user → Save.</div></div>
-            <div class="step"><div class="step-n">4</div><div class="step-body">Go to <strong>APIs &amp; Services → Credentials → Create Credentials → OAuth client ID</strong> → choose <strong>Web application</strong>.</div></div>
-            <div class="step"><div class="step-n">5</div><div class="step-body">Under <strong>Authorized JavaScript origins</strong> add the URL where you open this file.<br>For local: <code>http://localhost:8000</code> (run: <code>python3 -m http.server 8000</code>)<br>For hosted: your full URL (e.g. GitHub Pages)</div></div>
-            <div class="step"><div class="step-n">6</div><div class="step-body">Copy the <strong>Client ID</strong> (ends in <code>.apps.googleusercontent.com</code>) and paste it below:</div></div>
+          <div class="field-group">
+            <label class="field-label">Your Google OAuth Client ID</label>
+            <input class="field-input" id="settings-cid" placeholder="xxxxxx.apps.googleusercontent.com">
           </div>
-          <div class="fg1"><label class="fl">Your Google OAuth Client ID</label><input class="fi" id="cid-inp" placeholder="xxxxxxxx.apps.googleusercontent.com"></div>
-          <button class="btn btn-b" onclick="saveClientIdFromSettings()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
-            Save Client ID &amp; Sign In
+          <button class="btn btn-blue" onclick="saveAndConnect()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+            Save &amp; Connect to Google Drive
           </button>
         </div>
       </div>
+
     </div>
   </main>
 </div>
 
 <!-- PREVIEW MODAL -->
-<div class="ov2 hidden" id="mo-pv" onclick="if(event.target===this)closePV()">
-  <div class="modal lg">
+<div class="overlay hidden" id="preview-modal" onclick="if(event.target===this)closePreview()">
+  <div class="modal wide">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
-      <div style="flex:1"><div class="mh" id="pv-n"></div><div style="font-size:9px;color:var(--tx3);font-family:'Fira Code',monospace;margin-top:2px" id="pv-m"></div></div>
-      <button class="btn btn-o btn-sm" onclick="dlCur()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download
-      </button>
-      <button class="ib" onclick="closePV()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      <div style="flex:1">
+        <div class="modal-title" id="preview-title"></div>
+        <div style="font-size:9px;color:var(--tx3);font-family:'Fira Code',monospace;margin-top:2px" id="preview-meta"></div>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="downloadCurrentFile()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download</button>
+      <button class="ico-btn" onclick="closePreview()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
-    <div class="pvb" id="pv-b"></div>
+    <div class="preview-area" id="preview-body"></div>
   </div>
 </div>
 
-<!-- DEL MODAL -->
-<div class="ov2 hidden" id="mo-del">
-  <div class="modal sm">
-    <div class="mh">Delete File?</div>
-    <p style="font-size:12px;color:var(--tx2);margin-top:7px" id="del-msg"></p>
-    <div class="mf">
-      <button class="btn btn-o btn-sm" onclick="document.getElementById('mo-del').classList.add('hidden')">Cancel</button>
-      <button class="btn btn-r2 btn-sm" onclick="confirmDel()">Delete</button>
+<!-- DELETE FILE MODAL -->
+<div class="overlay hidden" id="delete-modal">
+  <div class="modal narrow">
+    <div class="modal-title">Remove File?</div>
+    <p style="font-size:12px;color:var(--tx2);margin-top:8px" id="delete-msg"></p>
+    <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--tx2);cursor:pointer;margin-top:12px">
+      <input type="checkbox" id="delete-from-drive" style="width:15px;height:15px;accent-color:var(--red)">
+      Also delete from Google Drive
+    </label>
+    <div class="modal-btns">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('delete-modal')">Cancel</button>
+      <button class="btn btn-red btn-sm" onclick="executeDelete()">Remove</button>
     </div>
   </div>
 </div>
 
-<!-- CLEAR MODAL -->
-<div class="ov2 hidden" id="mo-clr">
-  <div class="modal sm">
-    <div class="mh">Clear All Local Data?</div>
-    <p style="font-size:12px;color:var(--tx2);margin-top:7px">Removes all local files and notes. Cloud backups on Google Drive remain safe.</p>
-    <div class="mf">
-      <button class="btn btn-o btn-sm" onclick="document.getElementById('mo-clr').classList.add('hidden')">Cancel</button>
-      <button class="btn btn-r2 btn-sm" onclick="clearAll()">Clear Local</button>
+<!-- CLEAR ALL MODAL -->
+<div class="overlay hidden" id="clear-modal">
+  <div class="modal narrow">
+    <div class="modal-title">Clear All Local Data?</div>
+    <p style="font-size:12px;color:var(--tx2);margin-top:8px">Deletes all local files and notes. Your Google Drive backup stays safe.</p>
+    <div class="modal-btns">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('clear-modal')">Cancel</button>
+      <button class="btn btn-red btn-sm" onclick="executeClearAll()">Clear All</button>
     </div>
   </div>
 </div>
@@ -697,606 +503,880 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:'Outfit',
 <div class="toasts" id="toasts"></div>
 
 <!-- Google Identity Services -->
-<script src="https://accounts.google.com/gsi/client" async defer onload="onGSILoad()"></script>
+<script src="https://accounts.google.com/gsi/client" async defer onload="onGSIReady()"></script>
 
 <script>
-// ═══════════════════════════════════════════════
-//  GVAULT — Google Drive Personal Storage
-//  15 GB free · Trusted by Google · OAuth 2.0
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+//  GVAULT  ·  Google Drive Personal Storage
+//  Auto-login using token expiry tracking
+//  Always-visible View / Save / Remove buttons
+// ═══════════════════════════════════════════════════════
 
-const SCOPES    = 'https://www.googleapis.com/auth/drive.file';
-const DRIVE_API = 'https://www.googleapis.com/drive/v3';
-const UPLOAD_API= 'https://www.googleapis.com/upload/drive/v3';
-const FOLDER_NAME = 'GVAULT Personal Storage';
+// Keys stored in localStorage
+const LS = {
+  CID:    'gv_cid',       // OAuth client ID
+  TOKEN:  'gv_token',     // Saved access token
+  EXPIRY: 'gv_expiry',    // Token expiry timestamp
+  USER:   'gv_user',      // User info JSON
+};
 
-let CLIENT_ID='', accessToken='', tokenClient=null;
-let drFolderId='';
-let files=[], notes=[], sec='all', view='grid';
-let q='', delId=null, pvId=null, noteId=null;
-let gsiLoaded=false;
+const DRIVE = 'https://www.googleapis.com/drive/v3';
+const UPLOAD = 'https://www.googleapis.com/upload/drive/v3';
+const SCOPE = 'https://www.googleapis.com/auth/drive.file';
+const FOLDER = 'GVAULT Vault';
 
-// ─── IndexedDB ─────────────────────────────
-const IDB='GVaultDB', VER=1;
+let gsiReady = false;
+let tokenClient = null;
+let accessToken = '';
+let folderId = '';
+let files = [], notes = [];
+let currentSection = 'all';
+let currentView = 'grid';
+let searchQuery = '';
+let pendingDeleteId = null;
+let previewFileId = null;
+let activeNoteId = null;
 let db;
-function openDB(){
-  return new Promise((ok,fail)=>{
-    const r=indexedDB.open(IDB,VER);
-    r.onupgradeneeded=e=>{
-      const d=e.target.result;
-      if(!d.objectStoreNames.contains('files')){
-        const s=d.createObjectStore('files',{keyPath:'id',autoIncrement:true});
-        s.createIndex('cat','cat',{unique:false});
+
+// ═══════════════════════════════════════════════════════
+//  INDEXEDDB
+// ═══════════════════════════════════════════════════════
+async function openDatabase() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open('GVaultDB', 1);
+    req.onupgradeneeded = e => {
+      const d = e.target.result;
+      if (!d.objectStoreNames.contains('files')) {
+        d.createObjectStore('files', { keyPath: 'id', autoIncrement: true });
       }
-      if(!d.objectStoreNames.contains('notes'))d.createObjectStore('notes',{keyPath:'id',autoIncrement:true});
-      if(!d.objectStoreNames.contains('cfg'))  d.createObjectStore('cfg',{keyPath:'k'});
+      if (!d.objectStoreNames.contains('notes')) {
+        d.createObjectStore('notes', { keyPath: 'id', autoIncrement: true });
+      }
+      if (!d.objectStoreNames.contains('meta')) {
+        d.createObjectStore('meta', { keyPath: 'key' });
+      }
     };
-    r.onsuccess=e=>ok(e.target.result);r.onerror=e=>fail(e);
+    req.onsuccess = e => resolve(e.target.result);
+    req.onerror = e => reject(e.target.error);
   });
 }
-const tx_ =(s,m='readonly')=>db.transaction([s],m).objectStore(s);
-const qA  =s=>new Promise((ok,fail)=>{const r=tx_(s).getAll();r.onsuccess=e=>ok(e.target.result);r.onerror=e=>fail(e);});
-const qG  =(s,k)=>new Promise((ok,fail)=>{const r=tx_(s).get(k);r.onsuccess=e=>ok(e.target.result);r.onerror=e=>fail(e);});
-const qAd =(s,v)=>new Promise((ok,fail)=>{const r=tx_(s,'readwrite').add(v);r.onsuccess=e=>ok(e.target.result);r.onerror=e=>fail(e);});
-const qPt =(s,v)=>new Promise((ok,fail)=>{const r=tx_(s,'readwrite').put(v);r.onsuccess=e=>ok(e.target.result);r.onerror=e=>fail(e);});
-const qDl =(s,k)=>new Promise((ok,fail)=>{const r=tx_(s,'readwrite').delete(k);r.onsuccess=()=>ok();r.onerror=e=>fail(e);});
-const qCl =s=>new Promise((ok,fail)=>{const r=tx_(s,'readwrite').clear();r.onsuccess=()=>ok();r.onerror=e=>fail(e);});
 
-// ─── GSI Load ──────────────────────────────
-function onGSILoad(){
-  gsiLoaded=true;
-  loadSavedClientId();
+function dbOp(store, mode, op) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction([store], mode);
+    const s = tx.objectStore(store);
+    const req = op(s);
+    req.onsuccess = e => resolve(e.target.result);
+    req.onerror = e => reject(e.target.error);
+  });
 }
-function loadSavedClientId(){
-  try{
-    const saved=localStorage.getItem('gvault_cid');
-    if(saved){CLIENT_ID=saved;setupTokenClient(saved);}
-  }catch(e){}
-}
-function setupTokenClient(cid){
-  CLIENT_ID=cid;
-  if(!gsiLoaded){toast('Google auth not loaded yet — retry','err');return;}
-  try{
-    tokenClient=google.accounts.oauth2.initTokenClient({
-      client_id:cid,
-      scope:SCOPES,
-      callback:async(resp)=>{
-        if(resp.error){toast('Auth error: '+resp.error,'err');return;}
-        accessToken=resp.access_token;
-        await onSignedIn();
+
+const dbGetAll  = store => dbOp(store, 'readonly', s => s.getAll());
+const dbGet     = (store, key) => dbOp(store, 'readonly', s => s.get(key));
+const dbAdd     = (store, val) => dbOp(store, 'readwrite', s => s.add(val));
+const dbPut     = (store, val) => dbOp(store, 'readwrite', s => s.put(val));
+const dbDelete  = (store, key) => dbOp(store, 'readwrite', s => s.delete(key));
+const dbClear   = store => dbOp(store, 'readwrite', s => s.clear());
+
+// ═══════════════════════════════════════════════════════
+//  STARTUP — AUTO LOGIN LOGIC
+// ═══════════════════════════════════════════════════════
+window.addEventListener('load', async () => {
+  db = await openDatabase();
+  files = await dbGetAll('files');
+  notes = await dbGetAll('notes');
+
+  // Check if we have a saved token that hasn't expired
+  const savedToken  = localStorage.getItem(LS.TOKEN);
+  const savedExpiry = parseInt(localStorage.getItem(LS.EXPIRY) || '0');
+  const now = Date.now();
+
+  if (savedToken && savedExpiry > now + 60000) {
+    // Token is still valid (has more than 1 min left)
+    accessToken = savedToken;
+    spMsg('Restoring your session…');
+    const userData = JSON.parse(localStorage.getItem(LS.USER) || '{}');
+    applyUserInfo(userData);
+    try {
+      // Verify token is still good
+      const resp = await fetch(`${DRIVE}/about?fields=user,storageQuota`, {
+        headers: { Authorization: `Bearer ${accessToken}` }
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        applyUserInfo(data.user);
+        localStorage.setItem(LS.USER, JSON.stringify(data.user));
+        updateQuota(data.storageQuota);
+        folderId = await ensureFolder();
+        showApp();
+        toast('Welcome back! ✓', 'ok');
+        return;
       }
-    });
-    document.getElementById('signin-btn').disabled=false;
-    document.getElementById('signin-btn').textContent='Sign in with Google';
-    // Re-render the button text with logo
-    document.getElementById('signin-btn').innerHTML=`<svg class="glogo" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.33 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.67 14.62 48 24 48z"/></svg>Sign in with Google`;
-  }catch(e){console.error(e);}
+    } catch (e) {}
+    // Token failed — clear it
+    clearSavedToken();
+  }
+
+  // No valid saved token — check if we have a Client ID to try silent auth
+  const cid = localStorage.getItem(LS.CID);
+  if (cid && gsiReady) {
+    trySilentLogin(cid);
+  } else if (cid) {
+    // GSI not ready yet — wait for it
+    spMsg('Loading Google auth…');
+  } else {
+    // No client ID at all — show login
+    showLogin();
+  }
+});
+
+function onGSIReady() {
+  gsiReady = true;
+  const cid = localStorage.getItem(LS.CID);
+  if (cid) {
+    setupTokenClient(cid);
+    // If splash is showing, try silent
+    if (!document.getElementById('app').classList.contains('hidden') === false) {
+      trySilentLogin(cid);
+    }
+  } else {
+    showLogin();
+  }
 }
-function startSignIn(){
-  if(!tokenClient){toast('Enter your Client ID first','err');showSetupHelp();return;}
-  tokenClient.requestAccessToken({prompt:'consent'});
+
+function trySilentLogin(cid) {
+  spMsg('Signing in automatically…');
+  if (!tokenClient) setupTokenClient(cid);
+  // Try without any prompt — works if user already granted permission
+  tokenClient.requestAccessToken({ prompt: '' });
 }
-function showSetupHelp(){
-  document.getElementById('clientid-row').style.display='block';
-  const saved=localStorage.getItem('gvault_cid')||'';
-  if(saved)document.getElementById('clientid-inp').value=saved;
+
+function setupTokenClient(cid) {
+  if (!gsiReady) return;
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: cid,
+    scope: SCOPE,
+    callback: handleTokenResponse,
+  });
+  document.getElementById('signin-btn').disabled = false;
 }
-function saveClientId(){
-  const cid=(document.getElementById('clientid-inp').value||'').trim();
-  if(!cid){toast('Paste your Client ID first','err');return;}
-  localStorage.setItem('gvault_cid',cid);
+
+async function handleTokenResponse(resp) {
+  if (resp.error) {
+    // Silent login failed — show login screen so user can tap button
+    console.log('Auth response:', resp.error);
+    clearSavedToken();
+    showLogin(resp.error === 'access_denied' ? 'Tap Sign in to continue' : null);
+    return;
+  }
+
+  accessToken = resp.access_token;
+  // Save token with expiry (tokens last ~1 hour = 3600 seconds)
+  const expiry = Date.now() + (resp.expires_in || 3600) * 1000;
+  localStorage.setItem(LS.TOKEN, accessToken);
+  localStorage.setItem(LS.EXPIRY, String(expiry));
+
+  try {
+    const data = await driveGet(`${DRIVE}/about?fields=user,storageQuota`);
+    applyUserInfo(data.user);
+    localStorage.setItem(LS.USER, JSON.stringify(data.user));
+    updateQuota(data.storageQuota);
+    folderId = await ensureFolder();
+    showApp();
+    toast('Signed in ✓', 'ok');
+  } catch (e) {
+    clearSavedToken();
+    showLogin('Connection failed — please try again');
+  }
+}
+
+function applyUserInfo(u) {
+  if (!u) return;
+  document.getElementById('u-name').textContent = u.displayName || 'Google User';
+  document.getElementById('u-email').textContent = u.emailAddress || '';
+  const av = document.getElementById('u-av');
+  if (u.photoLink) av.innerHTML = `<img src="${u.photoLink}" alt="">`;
+  else av.textContent = (u.displayName || 'G')[0].toUpperCase();
+  document.getElementById('conn-dot').className = 'dot on';
+  document.getElementById('conn-txt').textContent = `Signed in · ${u.emailAddress || ''}`;
+  const bar = document.getElementById('drive-status-bar');
+  bar.className = 'drive-bar connected';
+  document.getElementById('drive-status-txt').textContent = `✓ Google Drive connected · ${u.emailAddress || ''}`;
+}
+
+function clearSavedToken() {
+  localStorage.removeItem(LS.TOKEN);
+  localStorage.removeItem(LS.EXPIRY);
+  accessToken = '';
+}
+
+// ═══════════════════════════════════════════════════════
+//  SCREEN MANAGEMENT
+// ═══════════════════════════════════════════════════════
+function spMsg(m) { document.getElementById('sp-msg').textContent = m; }
+
+function showLogin(msg) {
+  document.getElementById('splash').style.display = 'none';
+  document.getElementById('login').classList.remove('hidden');
+  document.getElementById('app').classList.add('hidden');
+  if (msg) toast(msg, 'info');
+  // Pre-fill if cid exists
+  const cid = localStorage.getItem(LS.CID) || '';
+  if (cid) document.getElementById('cid-inp').value = cid;
+}
+
+function showApp() {
+  document.getElementById('splash').style.display = 'none';
+  document.getElementById('login').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  renderFiles(); renderNotes(); refreshCounts();
+  setupDragDrop();
+  const cid = localStorage.getItem(LS.CID) || '';
+  document.getElementById('settings-cid').value = cid;
+}
+
+function showCidBox() {
+  document.getElementById('cid-box').style.display = 'block';
+}
+
+function useOffline() {
+  showApp();
+}
+
+function doSignIn() {
+  if (!tokenClient) { showCidBox(); toast('Enter your Client ID first', 'info'); return; }
+  tokenClient.requestAccessToken({ prompt: 'select_account' });
+}
+
+function saveCidAndSignIn() {
+  const cid = (document.getElementById('cid-inp').value || '').trim();
+  if (!cid) { toast('Paste your Client ID first', 'err'); return; }
+  localStorage.setItem(LS.CID, cid);
   setupTokenClient(cid);
-  toast('Client ID saved — now sign in','ok');
-  startSignIn();
+  if (tokenClient) tokenClient.requestAccessToken({ prompt: 'select_account' });
 }
-function saveClientIdFromSettings(){
-  const cid=(document.getElementById('cid-inp').value||'').trim();
-  if(!cid){toast('Paste your Client ID','err');return;}
-  localStorage.setItem('gvault_cid',cid);
+
+function saveAndConnect() {
+  const cid = (document.getElementById('settings-cid').value || '').trim();
+  if (!cid) { toast('Paste your Client ID', 'err'); return; }
+  localStorage.setItem(LS.CID, cid);
   setupTokenClient(cid);
-  document.getElementById('clientid-inp').value=cid;
-  startSignIn();
+  if (tokenClient) tokenClient.requestAccessToken({ prompt: 'select_account' });
 }
 
-// ─── Signed In ─────────────────────────────
-async function onSignedIn(){
-  try{
-    const ui=await driveGet(DRIVE_API+'/about?fields=user,storageQuota');
-    const user=ui.user;
-    document.getElementById('u-name').textContent=user.displayName||'Google User';
-    document.getElementById('u-email').textContent=user.emailAddress||'';
-    if(user.photoLink){document.getElementById('u-avatar').innerHTML=`<img src="${user.photoLink}" alt="">`;}
-    else{document.getElementById('u-avatar').textContent=(user.displayName||'G')[0].toUpperCase();}
-    updateQuota(ui.storageQuota);
-    document.getElementById('cs-dot').className='sdot ok';
-    document.getElementById('cs-txt').textContent=`Signed in as ${user.emailAddress}`;
-    document.getElementById('sync-txt').textContent=`Signed in · Google Drive ready · ${user.emailAddress}`;
-    document.getElementById('sync-bar').style.background='rgba(52,168,83,0.08)';
-    document.getElementById('sync-bar').style.borderColor='rgba(52,168,83,0.25)';
-    document.getElementById('sync-bar').style.color='var(--grn)';
-    // Ensure app folder exists
-    drFolderId=await ensureFolder();
-    toast('Google Drive connected ✓','ok');
-    document.getElementById('login-screen').classList.add('hidden');
-    initApp();
-  }catch(e){toast('Sign-in error: '+e.message,'err');console.error(e);}
-}
-async function signOut(){
-  if(accessToken)google.accounts.oauth2.revoke(accessToken,()=>{});
-  accessToken='';drFolderId='';
-  document.getElementById('u-name').textContent='Not signed in';
-  document.getElementById('u-email').textContent='Offline mode';
-  document.getElementById('u-avatar').textContent='?';
-  document.getElementById('cs-dot').className='sdot off';
-  document.getElementById('cs-txt').textContent='Not signed in to Google';
-  document.getElementById('sync-txt').textContent='Sign in to enable Google Drive sync';
-  document.getElementById('sync-bar').style='';
-  toast('Signed out','inf');
+function signOut() {
+  if (accessToken) { try { google.accounts.oauth2.revoke(accessToken, () => {}); } catch(e) {} }
+  clearSavedToken();
+  localStorage.removeItem(LS.USER);
+  folderId = '';
+  document.getElementById('u-name').textContent = 'Not signed in';
+  document.getElementById('u-email').textContent = 'Offline';
+  document.getElementById('u-av').textContent = '?';
+  document.getElementById('conn-dot').className = 'dot off';
+  document.getElementById('conn-txt').textContent = 'Not signed in';
+  document.getElementById('drive-status-bar').className = 'drive-bar disconnected';
+  document.getElementById('drive-status-txt').textContent = 'Not connected to Google Drive';
+  showLogin();
+  toast('Signed out', 'info');
 }
 
-// ─── App Init ──────────────────────────────
-async function initApp(){
-  db=await openDB();
-  files=await qA('files');
-  notes=await qA('notes');
-  const app=document.getElementById('main-app');
-  app.style.opacity='1';app.style.pointerEvents='auto';
-  renderFiles();renderNotes();refreshCounts();
-  setupDrop();
-  if(accessToken)setTimeout(updateQuotaDisplay,500);
-}
-
-// ─── Drive API helpers ─────────────────────
-async function driveGet(url){
-  const r=await fetch(url,{headers:{Authorization:`Bearer ${accessToken}`}});
-  if(!r.ok)throw new Error(`Drive ${r.status}: ${await r.text()}`);
+// ═══════════════════════════════════════════════════════
+//  DRIVE API CALLS
+// ═══════════════════════════════════════════════════════
+async function driveGet(url) {
+  const r = await fetch(url, { headers: { Authorization: `Bearer ${accessToken}` } });
+  if (!r.ok) throw new Error(`Drive error ${r.status}`);
   return r.json();
 }
-async function drivePost(url,headers,body){
-  const r=await fetch(url,{method:'POST',headers:{Authorization:`Bearer ${accessToken}`,...headers},body});
-  if(!r.ok)throw new Error(`Drive POST ${r.status}: ${await r.text()}`);
-  return r.json();
-}
-async function drivePut(url,headers,body){
-  const r=await fetch(url,{method:'PUT',headers:{Authorization:`Bearer ${accessToken}`,...headers},body});
-  return r;
-}
-async function driveDelete(url){
-  const r=await fetch(url,{method:'DELETE',headers:{Authorization:`Bearer ${accessToken}`}});
-  if(!r.ok&&r.status!==204)throw new Error(`Drive DEL ${r.status}`);
+
+async function ensureFolder() {
+  const q = `name='${FOLDER}' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
+  const res = await driveGet(`${DRIVE}/files?q=${encodeURIComponent(q)}&fields=files(id)`);
+  if (res.files && res.files.length > 0) return res.files[0].id;
+  const r = await fetch(`${DRIVE}/files`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: FOLDER, mimeType: 'application/vnd.google-apps.folder' })
+  });
+  const data = await r.json();
+  return data.id;
 }
 
-// ─── Ensure app folder ─────────────────────
-async function ensureFolder(){
-  const q=`name='${FOLDER_NAME}' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
-  const list=await driveGet(`${DRIVE_API}/files?q=${encodeURIComponent(q)}&fields=files(id,name)`);
-  if(list.files&&list.files.length>0)return list.files[0].id;
-  const f=await drivePost(`${DRIVE_API}/files`,{'Content-Type':'application/json'},
-    JSON.stringify({name:FOLDER_NAME,mimeType:'application/vnd.google-apps.folder'}));
-  return f.id;
-}
-
-// ─── Upload to Drive (resumable for >5MB) ──
-async function uploadToDrive(name, blob, contentType, folderId, onProgress){
-  const META={name,parents:[folderId]};
-  const isBig=blob.size>5*1024*1024;
-  if(!isBig){
-    // Multipart
-    const form=new FormData();
-    form.append('metadata',new Blob([JSON.stringify(META)],{type:'application/json'}));
-    form.append('file',blob,name);
-    const r=await fetch(`${UPLOAD_API}/files?uploadType=multipart`,{
-      method:'POST',headers:{Authorization:`Bearer ${accessToken}`},body:form
+async function uploadFile(name, blob, type, parentId, onProgress) {
+  const meta = { name, parents: [parentId] };
+  // Small files: multipart
+  if (blob.size <= 5 * 1024 * 1024) {
+    const form = new FormData();
+    form.append('metadata', new Blob([JSON.stringify(meta)], { type: 'application/json' }));
+    form.append('file', blob, name);
+    const r = await fetch(`${UPLOAD}/files?uploadType=multipart`, {
+      method: 'POST', headers: { Authorization: `Bearer ${accessToken}` }, body: form
     });
-    if(!r.ok)throw new Error(`Upload ${r.status}`);
+    if (!r.ok) throw new Error(r.status);
     return (await r.json()).id;
   }
-  // Resumable upload
-  const init=await fetch(`${UPLOAD_API}/files?uploadType=resumable`,{
-    method:'POST',
-    headers:{
-      Authorization:`Bearer ${accessToken}`,
-      'Content-Type':'application/json',
-      'X-Upload-Content-Type':contentType||'application/octet-stream',
-      'X-Upload-Content-Length':blob.size,
+  // Large files: resumable
+  const initR = await fetch(`${UPLOAD}/files?uploadType=resumable`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json',
+      'X-Upload-Content-Type': type || 'application/octet-stream',
+      'X-Upload-Content-Length': blob.size,
     },
-    body:JSON.stringify(META)
+    body: JSON.stringify(meta)
   });
-  if(!init.ok)throw new Error(`Init upload ${init.status}`);
-  const upUrl=init.headers.get('Location');
-  const CHUNK=8*1024*1024;
-  let start=0, fileId='';
-  while(start<blob.size){
-    const end=Math.min(start+CHUNK,blob.size);
-    const chunk=blob.slice(start,end);
-    const r=await fetch(upUrl,{
-      method:'PUT',
-      headers:{
-        'Content-Range':`bytes ${start}-${end-1}/${blob.size}`,
-        'Content-Type':contentType||'application/octet-stream',
-      },
-      body:chunk
+  if (!initR.ok) throw new Error(initR.status);
+  const resumeUrl = initR.headers.get('Location');
+  const CHUNK = 8 * 1024 * 1024;
+  let start = 0, fileId = '';
+  while (start < blob.size) {
+    const end = Math.min(start + CHUNK, blob.size);
+    const r = await fetch(resumeUrl, {
+      method: 'PUT',
+      headers: { 'Content-Range': `bytes ${start}-${end - 1}/${blob.size}`, 'Content-Type': type || 'application/octet-stream' },
+      body: blob.slice(start, end)
     });
-    if(r.status===308){
-      const range=r.headers.get('Range');
-      start=range?parseInt(range.split('-')[1])+1:end;
-    } else if(r.status===200||r.status===201){
-      const d=await r.json();fileId=d.id;start=blob.size;
-    } else {
-      throw new Error(`Chunk upload ${r.status}`);
-    }
-    if(onProgress)onProgress(Math.min(end,blob.size),blob.size);
+    if (r.status === 308) {
+      const range = r.headers.get('Range');
+      start = range ? parseInt(range.split('-')[1]) + 1 : end;
+    } else if (r.status === 200 || r.status === 201) {
+      fileId = (await r.json()).id; start = blob.size;
+    } else throw new Error(r.status);
+    if (onProgress) onProgress(Math.min(end, blob.size), blob.size);
   }
   return fileId;
 }
 
-// ─── Download from Drive ────────────────────
-async function downloadFromDrive(fileId, mimeType){
-  const r=await fetch(`${DRIVE_API}/files/${fileId}?alt=media`,{
-    headers:{Authorization:`Bearer ${accessToken}`}
+async function downloadDriveFile(fileId, mimeType) {
+  const r = await fetch(`${DRIVE}/files/${fileId}?alt=media`, {
+    headers: { Authorization: `Bearer ${accessToken}` }
   });
-  if(!r.ok)throw new Error(`Download ${r.status}`);
-  const buf=await r.arrayBuffer();
-  return new Blob([buf],{type:mimeType||'application/octet-stream'});
+  if (!r.ok) throw new Error(r.status);
+  return new Blob([await r.arrayBuffer()], { type: mimeType || 'application/octet-stream' });
 }
 
-// ─── Quota ─────────────────────────────────
-function updateQuota(q){
-  if(!q)return;
-  const used=parseInt(q.usage)||0;
-  const total=parseInt(q.limit)||16106127360;
-  const pct=Math.min(used/total*100,100);
-  document.getElementById('q-bar').style.width=pct+'%';
-  document.getElementById('q-txt').textContent=`${fmtSz(used)} / ${fmtSz(total)}`;
-  document.getElementById('qd-bar').style.width=pct+'%';
-  document.getElementById('qd-txt').textContent=`${fmtSz(used)} used of ${fmtSz(total)}`;
-}
-async function updateQuotaDisplay(){
-  if(!accessToken)return;
-  try{const ui=await driveGet(DRIVE_API+'/about?fields=storageQuota');updateQuota(ui.storageQuota);}catch(e){}
+async function deleteDriveFile(fileId) {
+  await fetch(`${DRIVE}/files/${fileId}`, {
+    method: 'DELETE', headers: { Authorization: `Bearer ${accessToken}` }
+  });
 }
 
-// ─── File helpers ──────────────────────────
-function catOf(f){
-  const t=f.type||'',e=(f.name||'').split('.').pop().toLowerCase();
-  if(t.startsWith('image/'))return'photos';
-  if(t.startsWith('video/'))return'videos';
-  if(e==='html'||e==='htm')return'html';
-  if(['pdf','doc','docx','xls','xlsx','ppt','pptx','txt','csv','rtf','md'].includes(e)||
-     t.includes('pdf')||t.includes('document'))return'docs';
-  return'other';
+function updateQuota(q) {
+  if (!q) return;
+  const used = parseInt(q.usage) || 0, total = parseInt(q.limit) || 16106127360;
+  const pct = Math.min(used / total * 100, 100);
+  document.getElementById('stor-fill').style.width = pct + '%';
+  document.getElementById('stor-used').textContent = `${formatSize(used)} / ${formatSize(total)}`;
+  document.getElementById('quota-fill').style.width = pct + '%';
+  document.getElementById('quota-txt').textContent = `${formatSize(used)} of ${formatSize(total)}`;
 }
-const EMO={photos:'🖼️',videos:'🎬',html:'🌐',docs:'📄',other:'📦'};
-const EXT={pdf:'📕',doc:'📝',docx:'📝',xls:'📊',xlsx:'📊',ppt:'📊',pptx:'📊',
-  txt:'📄',csv:'📊',zip:'🗜️',mp3:'🎵',wav:'🎵',html:'🌐',js:'⚡',json:'🗂️',svg:'🎨',md:'📝'};
-function femo(f){
-  if(f.cat==='photos')return'🖼️';if(f.cat==='videos')return'🎬';
-  const e=(f.name||'').split('.').pop().toLowerCase();return EXT[e]||EMO[f.cat]||'📦';
-}
-function fmtSz(b){
-  if(!b&&b!==0)return'—';
-  const u=['B','KB','MB','GB','TB'];let i=0,n=b;
-  while(n>=1024&&i<u.length-1){n/=1024;i++;}
-  return`${n.toFixed(i?1:0)} ${u[i]}`;
-}
-function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
-// ─── Upload local ──────────────────────────
-async function onFiles(e){
-  const list=Array.from(e.target.files||[]);if(!list.length)return;
-  let added=0;
-  for(const f of list){
-    if(f.size>1073741824){toast(`${f.name} exceeds 1 GB`,'err');continue;}
-    try{
-      const buf=await f.arrayBuffer();
-      const rec={name:f.name,type:f.type,cat:catOf(f),size:f.size,date:new Date().toISOString(),
-        blob:new Blob([buf],{type:f.type}),driveId:null};
-      const id=await qAd('files',rec);rec.id=id;files.push(rec);added++;
-    }catch(err){toast(`Failed: ${f.name}`,'err');console.error(err);}
+// ═══════════════════════════════════════════════════════
+//  FILE HANDLING
+// ═══════════════════════════════════════════════════════
+function getCategory(file) {
+  const t = file.type || '', e = (file.name || '').split('.').pop().toLowerCase();
+  if (t.startsWith('image/')) return 'photos';
+  if (t.startsWith('video/')) return 'videos';
+  if (e === 'html' || e === 'htm') return 'html';
+  if (['pdf','doc','docx','xls','xlsx','ppt','pptx','txt','csv','rtf','md'].includes(e) || t.includes('pdf') || t.includes('document')) return 'docs';
+  return 'other';
+}
+
+const EMOJIS = { photos: '🖼️', videos: '🎬', html: '🌐', docs: '📄', other: '📦' };
+const EXT_EMOJIS = { pdf:'📕',doc:'📝',docx:'📝',xls:'📊',xlsx:'📊',ppt:'📊',pptx:'📊',txt:'📄',csv:'📊',zip:'🗜️',mp3:'🎵',wav:'🎵',html:'🌐',js:'⚡',json:'🗂️',svg:'🎨',md:'📝' };
+
+function getEmoji(file) {
+  if (file.cat === 'photos') return '🖼️';
+  if (file.cat === 'videos') return '🎬';
+  const ext = (file.name || '').split('.').pop().toLowerCase();
+  return EXT_EMOJIS[ext] || EMOJIS[file.cat] || '📦';
+}
+
+function formatSize(bytes) {
+  if (!bytes && bytes !== 0) return '—';
+  const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+  let i = 0, n = bytes;
+  while (n >= 1024 && i < units.length - 1) { n /= 1024; i++; }
+  return `${n.toFixed(i ? 1 : 0)} ${units[i]}`;
+}
+
+function escape(s) {
+  return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+async function handleFiles(e) {
+  const list = Array.from(e.target.files || []);
+  if (!list.length) return;
+  let added = 0;
+  for (const f of list) {
+    if (f.size > 1073741824) { toast(`${f.name} is over 1 GB limit`, 'err'); continue; }
+    try {
+      const buf = await f.arrayBuffer();
+      const rec = {
+        name: f.name, type: f.type, cat: getCategory(f),
+        size: f.size, date: new Date().toISOString(),
+        blob: new Blob([buf], { type: f.type }), driveId: null
+      };
+      const id = await dbAdd('files', rec);
+      rec.id = id;
+      files.push(rec);
+      added++;
+    } catch (err) { toast(`Failed to add: ${f.name}`, 'err'); }
   }
-  if(added){toast(`${added} file${added>1?'s':''} added`,'ok');renderFiles();refreshCounts();}
-  e.target.value='';
+  if (added) { toast(`${added} file${added > 1 ? 's' : ''} added ✓`, 'ok'); renderFiles(); refreshCounts(); }
+  e.target.value = '';
 }
 
-// ─── Filtered ──────────────────────────────
-const FILE_SECS=['all','photos','videos','docs','html','other'];
-function filtered(){
-  let r=files;
-  if(sec!=='all')r=r.filter(f=>f.cat===sec);
-  if(q)r=r.filter(f=>(f.name||'').toLowerCase().includes(q.toLowerCase()));
+// ═══════════════════════════════════════════════════════
+//  RENDER FILES
+// ═══════════════════════════════════════════════════════
+const FILE_SECTIONS = ['all', 'photos', 'videos', 'docs', 'html', 'other'];
+
+function getFilteredFiles() {
+  let r = files;
+  if (currentSection !== 'all') r = r.filter(f => f.cat === currentSection);
+  if (searchQuery) r = r.filter(f => (f.name || '').toLowerCase().includes(searchQuery.toLowerCase()));
   return r;
 }
 
-// ─── Render ────────────────────────────────
-function renderFiles(){
-  const data=filtered();
-  const fg=document.getElementById('fg');
-  const emp=document.getElementById('femp');
-  document.getElementById('fcnt').textContent=`${data.length} file${data.length!==1?'s':''}`;
-  if(!data.length){fg.innerHTML='';emp.classList.remove('hidden');return;}
-  emp.classList.add('hidden');
-  fg.className='fg'+(view==='list'?' ls':'');
-  const isList=view==='list';
-  fg.innerHTML=data.map(f=>{
-    const ext=(f.name||'').split('.').pop().toUpperCase().substring(0,5);
-    return`<div class="fc" data-id="${f.id}" onclick="openPV(${f.id})">
-      ${!isList?`<div class="fhov" onclick="event.stopPropagation()">
-        <button class="fa fa-d" onclick="askDel(${f.id})" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-        <button class="fa fa-dl" onclick="dlFile(${f.id})" title="Download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+function renderFiles() {
+  const data = getFilteredFiles();
+  const grid = document.getElementById('file-grid');
+  const empty = document.getElementById('empty-state');
+  document.getElementById('file-count').textContent = `${data.length} file${data.length !== 1 ? 's' : ''}`;
+
+  if (!data.length) { grid.innerHTML = ''; empty.classList.remove('hidden'); return; }
+  empty.classList.add('hidden');
+
+  const isList = currentView === 'list';
+  grid.className = 'grid' + (isList ? ' list-mode' : '');
+
+  grid.innerHTML = data.map(f => {
+    const ext = (f.name || '').split('.').pop().toUpperCase().slice(0, 5);
+    const emoji = getEmoji(f);
+    const synced = !!f.driveId;
+
+    return `<div class="card" data-id="${f.id}">
+      ${!isList ? `<div class="cloud-icon ${synced ? 'synced' : 'local'}" title="${synced ? 'Backed up to Drive' : 'Local only'}">${synced ? '☁' : '●'}</div>` : ''}
+      <div class="card-thumb" id="thumb-${f.id}">
+        <span>${emoji}</span>
+        ${!isList ? `<span class="card-ext">${ext}</span>` : ''}
       </div>
-      <div class="cloud-dot ${f.driveId?'up':'lo'}" title="${f.driveId?'Backed up':'Local only'}">${f.driveId?'☁':'●'}</div>`:''
-      }
-      <div class="fth" id="th-${f.id}"><span>${femo(f)}</span>${!isList?`<span class="ext-lbl">${ext}</span>`:''}</div>
-      <div class="fb">
-        <div class="fn">${esc(f.name)}</div>
-        ${isList?`<span class="ls-ext">${ext}</span>`:''}
-        <div class="fm2">${fmtSz(f.size)} · ${new Date(f.date).toLocaleDateString()}</div>
-        ${isList?`<div onclick="event.stopPropagation()" style="display:flex;gap:3px;flex-shrink:0">
-          <button class="fa fa-d" onclick="askDel(${f.id})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-          <button class="fa fa-dl" onclick="dlFile(${f.id})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
-        </div>`:''}
+      <div class="card-info">
+        <div class="card-name">${escape(f.name)}</div>
+        ${isList ? `<span style="font-size:8px;font-family:'Fira Code',monospace;background:var(--bg3);color:var(--tx3);padding:1px 5px;border-radius:4px;flex-shrink:0">${ext}</span>` : ''}
+        <div class="card-meta">${formatSize(f.size)} · ${new Date(f.date).toLocaleDateString()}</div>
+        ${!isList ? `
+        <div class="card-actions">
+          <button class="action-btn view" onclick="openPreview(${f.id})">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>View
+          </button>
+          <button class="action-btn save" onclick="downloadFile(${f.id})">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Save
+          </button>
+          <button class="action-btn remove" onclick="askDeleteFile(${f.id})">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>Remove
+          </button>
+        </div>` : ''}
       </div>
+      ${isList ? `
+      <div class="card-actions">
+        <button class="action-btn view" onclick="openPreview(${f.id})" title="View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        <button class="action-btn save" onclick="downloadFile(${f.id})" title="Download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+        <button class="action-btn remove" onclick="askDeleteFile(${f.id})" title="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
+      </div>` : ''}
     </div>`;
   }).join('');
-  data.forEach(f=>{if((f.cat==='photos'||f.cat==='videos')&&f.blob)loadThumb(f);});
+
+  // Load thumbnails
+  data.forEach(f => {
+    if ((f.cat === 'photos' || f.cat === 'videos') && f.blob) {
+      loadThumbnail(f);
+    }
+  });
 }
 
-function loadThumb(f){
-  const el=document.getElementById('th-'+f.id);if(!el)return;
-  const url=URL.createObjectURL(f.blob);
-  const ext=(f.name||'').split('.').pop().toUpperCase().substring(0,5);
-  if(f.cat==='photos'){el.innerHTML=`<img src="${url}" alt=""><span class="ext-lbl">${ext}</span>`;}
-  else{el.innerHTML=`<video src="${url}" preload="metadata" muted style="width:100%;height:100%;object-fit:cover"></video><span class="ext-lbl">${ext}</span><span style="position:absolute;font-size:18px">▶</span>`;}
-}
-
-// ─── Notes ─────────────────────────────────
-function renderNotes(){
-  const el=document.getElementById('nlist');
-  if(!notes.length){el.innerHTML='<div style="font-size:10px;color:var(--tx3);text-align:center;padding:16px">No notes yet</div>';return;}
-  const s=[...notes].sort((a,b)=>new Date(b.date)-new Date(a.date));
-  el.innerHTML=s.map(n=>`<div class="nc ${n.id===noteId?'on':''}" onclick="openNote(${n.id})">
-    <div class="nc-t">${esc(n.title||'Untitled')}</div>
-    <div class="nc-p">${esc((n.content||'').substring(0,50))}</div>
-    <div class="nc-d">${new Date(n.date).toLocaleDateString()}</div>
-  </div>`).join('');
-  document.getElementById('nb-notes').textContent=notes.length;
-}
-async function newNote(){
-  const n={title:'',content:'',date:new Date().toISOString()};
-  const id=await qAd('notes',n);n.id=id;notes.push(n);noteId=id;
-  renderNotes();openNote(id);
-}
-function openNote(id){
-  noteId=id;const n=notes.find(x=>x.id===id);if(!n)return;
-  document.getElementById('n-idle').classList.add('hidden');
-  document.getElementById('ned').classList.remove('hidden');
-  document.getElementById('ntitle').value=n.title||'';
-  document.getElementById('nbody').value=n.content||'';
-  document.getElementById('nsaved').textContent='Saved';renderNotes();
-}
-let nsT=null;
-function saveNote(){
-  document.getElementById('nsaved').textContent='Saving…';
-  if(nsT)clearTimeout(nsT);
-  nsT=setTimeout(async()=>{
-    if(!noteId)return;const n=notes.find(x=>x.id===noteId);if(!n)return;
-    n.title=document.getElementById('ntitle').value;
-    n.content=document.getElementById('nbody').value;
-    n.date=new Date().toISOString();
-    await qPt('notes',n);renderNotes();
-    document.getElementById('nsaved').textContent='Saved · '+new Date().toLocaleTimeString();
-  },600);
-}
-async function delNote(){
-  if(!noteId)return;
-  await qDl('notes',noteId);notes=notes.filter(n=>n.id!==noteId);noteId=null;
-  document.getElementById('ned').classList.add('hidden');
-  document.getElementById('n-idle').classList.remove('hidden');
-  renderNotes();refreshCounts();toast('Note deleted','inf');
-}
-
-// ─── Preview ───────────────────────────────
-function openPV(id){
-  const f=files.find(x=>x.id===id);if(!f)return;pvId=id;
-  document.getElementById('pv-n').textContent=f.name;
-  document.getElementById('pv-m').textContent=`${fmtSz(f.size)} · ${f.type||'unknown'} · ${new Date(f.date).toLocaleString()}`;
-  const body=document.getElementById('pv-b');
-  const url=URL.createObjectURL(f.blob);
-  if(f.cat==='photos')body.innerHTML=`<img src="${url}" alt="${esc(f.name)}" style="max-width:100%;max-height:58vh;object-fit:contain">`;
-  else if(f.cat==='videos')body.innerHTML=`<video src="${url}" controls style="max-width:100%;max-height:58vh"></video>`;
-  else if(f.cat==='html')body.innerHTML=`<iframe src="${url}" style="width:100%;height:56vh;border:none;border-radius:8px"></iframe>`;
-  else if((f.type||'').startsWith('audio/'))body.innerHTML=`<div style="text-align:center;padding:40px"><div style="font-size:46px;margin-bottom:14px">🎵</div><audio src="${url}" controls style="width:100%"></audio></div>`;
-  else body.innerHTML=`<div style="text-align:center;padding:40px"><div style="font-size:50px;margin-bottom:12px">${femo(f)}</div><div style="font-size:14px;font-weight:600;margin-bottom:4px">${esc(f.name)}</div><div style="font-size:11px;color:var(--tx3);margin-bottom:18px">${fmtSz(f.size)}</div><button class="btn btn-b" onclick="dlFile(${f.id})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download</button></div>`;
-  document.getElementById('mo-pv').classList.remove('hidden');
-}
-function closePV(){
-  const b=document.getElementById('pv-b');
-  const m=b.querySelector('img,video,iframe,audio');if(m?.src)URL.revokeObjectURL(m.src);
-  b.innerHTML='';document.getElementById('mo-pv').classList.add('hidden');pvId=null;
-}
-function dlCur(){if(pvId)dlFile(pvId);}
-function dlFile(id){
-  const f=files.find(x=>x.id===id);if(!f)return;
-  const url=URL.createObjectURL(f.blob);
-  const a=document.createElement('a');a.href=url;a.download=f.name;a.click();
-  setTimeout(()=>URL.revokeObjectURL(url),3000);
-}
-
-// ─── Delete ────────────────────────────────
-function askDel(id){delId=id;const f=files.find(x=>x.id===id);document.getElementById('del-msg').textContent=`Permanently delete "${f?.name}"?`;document.getElementById('mo-del').classList.remove('hidden');}
-async function confirmDel(){
-  if(!delId)return;
-  const f=files.find(x=>x.id===delId);
-  // Also delete from Drive if synced
-  if(f?.driveId&&accessToken){
-    try{await driveDelete(`${DRIVE_API}/files/${f.driveId}`);}catch(e){console.warn('Drive delete failed',e);}
+function loadThumbnail(f) {
+  const el = document.getElementById(`thumb-${f.id}`);
+  if (!el) return;
+  const url = URL.createObjectURL(f.blob);
+  const ext = (f.name || '').split('.').pop().toUpperCase().slice(0, 5);
+  if (f.cat === 'photos') {
+    el.innerHTML = `<img src="${url}" alt=""><span class="card-ext">${ext}</span>`;
+  } else {
+    el.innerHTML = `<video src="${url}" preload="metadata" muted style="width:100%;height:100%;object-fit:cover"></video>
+      <span class="card-ext">${ext}</span>
+      <span style="position:absolute;font-size:16px">▶</span>`;
   }
-  await qDl('files',delId);files=files.filter(f=>f.id!==delId);
-  document.getElementById('mo-del').classList.add('hidden');delId=null;
-  renderFiles();refreshCounts();toast('File deleted','inf');
 }
 
-// ─── Backup to Drive ───────────────────────
-async function backupAll(){
-  if(!accessToken){toast('Sign in to Google first','err');return;}
-  if(!drFolderId)drFolderId=await ensureFolder();
-  const btn=document.getElementById('bk-btn');btn.disabled=true;
-  try{
-    const allF=await qA('files');
-    const allN=await qA('notes');
-    const total=allF.length+1;let done=0;
-    // Upload notes JSON
-    prog('Saving notes…',0);
-    const nJSON=JSON.stringify(allN.map(n=>({id:n.id,title:n.title,content:n.content,date:n.date})));
-    await uploadToDrive('_gvault_notes.json',new Blob([nJSON],{type:'application/json'}),'application/json',drFolderId,null);
+// ═══════════════════════════════════════════════════════
+//  FILE ACTIONS
+// ═══════════════════════════════════════════════════════
+function openPreview(id) {
+  const f = files.find(x => x.id === id);
+  if (!f) return;
+  previewFileId = id;
+  document.getElementById('preview-title').textContent = f.name;
+  document.getElementById('preview-meta').textContent = `${formatSize(f.size)} · ${f.type || 'unknown'} · ${new Date(f.date).toLocaleString()}`;
+  const body = document.getElementById('preview-body');
+  const url = URL.createObjectURL(f.blob);
+  if (f.cat === 'photos') body.innerHTML = `<img src="${url}" alt="${escape(f.name)}" style="max-width:100%;max-height:56vh;object-fit:contain">`;
+  else if (f.cat === 'videos') body.innerHTML = `<video src="${url}" controls style="max-width:100%;max-height:56vh"></video>`;
+  else if (f.cat === 'html') body.innerHTML = `<iframe src="${url}" style="width:100%;height:54vh;border:none;border-radius:7px"></iframe>`;
+  else if ((f.type || '').startsWith('audio/')) body.innerHTML = `<div style="text-align:center;padding:36px"><div style="font-size:44px;margin-bottom:12px">🎵</div><audio src="${url}" controls style="width:100%"></audio></div>`;
+  else body.innerHTML = `<div style="text-align:center;padding:36px">
+    <div style="font-size:48px;margin-bottom:12px">${getEmoji(f)}</div>
+    <div style="font-size:14px;font-weight:600;margin-bottom:5px">${escape(f.name)}</div>
+    <div style="font-size:11px;color:var(--tx3);margin-bottom:16px">${formatSize(f.size)}</div>
+    <button class="btn btn-blue" onclick="downloadFile(${f.id})">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download
+    </button>
+  </div>`;
+  document.getElementById('preview-modal').classList.remove('hidden');
+}
+
+function closePreview() {
+  const body = document.getElementById('preview-body');
+  const m = body.querySelector('img,video,iframe,audio');
+  if (m?.src) URL.revokeObjectURL(m.src);
+  body.innerHTML = '';
+  document.getElementById('preview-modal').classList.add('hidden');
+  previewFileId = null;
+}
+
+function downloadCurrentFile() { if (previewFileId) downloadFile(previewFileId); }
+
+function downloadFile(id) {
+  const f = files.find(x => x.id === id);
+  if (!f) return;
+  const url = URL.createObjectURL(f.blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = f.name; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 3000);
+}
+
+function askDeleteFile(id) {
+  pendingDeleteId = id;
+  const f = files.find(x => x.id === id);
+  document.getElementById('delete-msg').textContent = `Remove "${f?.name}" from this app?`;
+  document.getElementById('delete-from-drive').checked = false;
+  document.getElementById('delete-modal').classList.remove('hidden');
+}
+
+async function executeDelete() {
+  if (!pendingDeleteId) return;
+  const f = files.find(x => x.id === pendingDeleteId);
+  const alsoDrive = document.getElementById('delete-from-drive').checked;
+  if (alsoDrive && f?.driveId && accessToken) {
+    try { await deleteDriveFile(f.driveId); } catch (e) { console.warn('Drive delete failed', e); }
+  }
+  await dbDelete('files', pendingDeleteId);
+  files = files.filter(x => x.id !== pendingDeleteId);
+  closeModal('delete-modal');
+  pendingDeleteId = null;
+  renderFiles(); refreshCounts();
+  toast('File removed', 'info');
+}
+
+// ═══════════════════════════════════════════════════════
+//  NOTES
+// ═══════════════════════════════════════════════════════
+function renderNotes() {
+  const el = document.getElementById('notes-list');
+  if (!notes.length) {
+    el.innerHTML = '<div style="font-size:11px;color:var(--tx3);text-align:center;padding:16px">No notes yet</div>';
+    document.getElementById('nb-notes').textContent = 0;
+    return;
+  }
+  const sorted = [...notes].sort((a, b) => new Date(b.date) - new Date(a.date));
+  el.innerHTML = sorted.map(n => `
+    <div class="note-card ${n.id === activeNoteId ? 'active' : ''}" onclick="openNote(${n.id})">
+      <div class="note-title">${escape(n.title || 'Untitled')}</div>
+      <div class="note-preview">${escape((n.content || '').slice(0, 55))}</div>
+      <div class="note-date">${new Date(n.date).toLocaleDateString()}</div>
+    </div>`).join('');
+  document.getElementById('nb-notes').textContent = notes.length;
+}
+
+async function createNote() {
+  const n = { title: '', content: '', date: new Date().toISOString() };
+  const id = await dbAdd('notes', n);
+  n.id = id; notes.push(n); activeNoteId = id;
+  renderNotes(); openNote(id);
+}
+
+function openNote(id) {
+  activeNoteId = id;
+  const n = notes.find(x => x.id === id);
+  if (!n) return;
+  document.getElementById('note-idle').classList.add('hidden');
+  document.getElementById('note-active').classList.remove('hidden');
+  document.getElementById('note-title').value = n.title || '';
+  document.getElementById('note-body').value = n.content || '';
+  document.getElementById('note-saved-indicator').textContent = 'Saved';
+  renderNotes();
+}
+
+let noteSaveTimer = null;
+function autoSaveNote() {
+  document.getElementById('note-saved-indicator').textContent = 'Saving…';
+  if (noteSaveTimer) clearTimeout(noteSaveTimer);
+  noteSaveTimer = setTimeout(async () => {
+    if (!activeNoteId) return;
+    const n = notes.find(x => x.id === activeNoteId);
+    if (!n) return;
+    n.title = document.getElementById('note-title').value;
+    n.content = document.getElementById('note-body').value;
+    n.date = new Date().toISOString();
+    await dbPut('notes', n);
+    renderNotes();
+    document.getElementById('note-saved-indicator').textContent = 'Saved · ' + new Date().toLocaleTimeString();
+  }, 700);
+}
+
+async function deleteNote() {
+  if (!activeNoteId) return;
+  await dbDelete('notes', activeNoteId);
+  notes = notes.filter(n => n.id !== activeNoteId);
+  activeNoteId = null;
+  document.getElementById('note-active').classList.add('hidden');
+  document.getElementById('note-idle').classList.remove('hidden');
+  renderNotes(); refreshCounts();
+  toast('Note deleted', 'info');
+}
+
+// ═══════════════════════════════════════════════════════
+//  BACKUP & RESTORE
+// ═══════════════════════════════════════════════════════
+async function doBackup() {
+  if (!accessToken) { toast('Sign in to Google Drive first', 'err'); return; }
+  if (!folderId) folderId = await ensureFolder();
+  const btn = document.getElementById('backup-btn');
+  btn.disabled = true;
+  try {
+    const allFiles = await dbGetAll('files');
+    const allNotes = await dbGetAll('notes');
+    const total = allFiles.length + 1;
+    let done = 0;
+
+    setProgress('Saving notes…', 0);
+    const notesData = allNotes.map(n => ({ id: n.id, title: n.title, content: n.content, date: n.date }));
+    await uploadFile('_gvault_notes.json', new Blob([JSON.stringify(notesData)], { type: 'application/json' }), 'application/json', folderId, null);
     done++;
 
-    const meta=[];
-    for(const f of allF){
-      prog(`Uploading: ${f.name}`,done/total*100);
-      const drId=await uploadToDrive(f.name,f.blob,f.type||'application/octet-stream',drFolderId,(loaded,total2)=>{
-        prog(`${f.name} — ${fmtSz(loaded)}/${fmtSz(f.size)}`,((done+(loaded/total2))/total)*100);
+    const fileMeta = [];
+    for (const f of allFiles) {
+      setProgress(`Uploading: ${f.name}`, done / total * 100);
+      const driveId = await uploadFile(f.name, f.blob, f.type || 'application/octet-stream', folderId, (loaded, total2) => {
+        setProgress(`${f.name} (${formatSize(loaded)}/${formatSize(f.size)})`, (done + loaded / total2) / total * 100);
       });
-      meta.push({id:f.id,name:f.name,type:f.type,cat:f.cat,size:f.size,date:f.date,driveId:drId});
-      f.driveId=drId;await qPt('files',f);done++;
+      fileMeta.push({ id: f.id, name: f.name, type: f.type, cat: f.cat, size: f.size, date: f.date, driveId });
+      f.driveId = driveId;
+      await dbPut('files', f);
+      done++;
     }
-    // Upload file manifest
-    await uploadToDrive('_gvault_files.json',new Blob([JSON.stringify(meta)],{type:'application/json'}),'application/json',drFolderId,null);
-    const ts=new Date().toISOString();
-    await qPt('cfg',{k:'lastSync',v:ts});
-    prog('Backup complete!',100);hideProg();
-    renderFiles();updateBStats();updateQuotaDisplay();
-    toast(`Backed up ${allF.length} files + ${allN.length} notes to Google Drive ✓`,'ok');
-  }catch(e){toast('Backup failed: '+e.message,'err');console.error(e);hideProg();}
-  finally{btn.disabled=false;}
+
+    await uploadFile('_gvault_manifest.json', new Blob([JSON.stringify(fileMeta)], { type: 'application/json' }), 'application/json', folderId, null);
+    await dbPut('meta', { key: 'lastBackup', value: new Date().toISOString() });
+
+    setProgress('Backup complete! ✓', 100);
+    hideProgress();
+    renderFiles(); updateCloudStats();
+    toast(`Backed up ${allFiles.length} files + ${allNotes.length} notes ✓`, 'ok');
+  } catch (e) {
+    toast('Backup failed: ' + e.message, 'err'); console.error(e); hideProgress();
+  } finally { btn.disabled = false; }
 }
 
-// ─── Restore from Drive ────────────────────
-async function restoreAll(){
-  if(!accessToken){toast('Sign in to Google first','err');return;}
-  if(!drFolderId)drFolderId=await ensureFolder();
-  if(!confirm('Replace local data with your Google Drive backup?'))return;
-  const btn=document.getElementById('rs-btn');btn.disabled=true;
-  try{
-    prog('Reading Drive…',0);
-    // Find manifest files
-    const q2=`'${drFolderId}' in parents and trashed=false`;
-    const list=await driveGet(`${DRIVE_API}/files?q=${encodeURIComponent(q2)}&fields=files(id,name,mimeType,size)`);
-    const allFiles=list.files||[];
-    const notesFile=allFiles.find(f=>f.name==='_gvault_notes.json');
-    const filesManifest=allFiles.find(f=>f.name==='_gvault_files.json');
-    if(!filesManifest&&!notesFile){toast('No backup found in Drive','err');hideProg();btn.disabled=false;return;}
-    await qCl('files');await qCl('notes');files=[];notes=[];
+async function doRestore() {
+  if (!accessToken) { toast('Sign in to Google Drive first', 'err'); return; }
+  if (!folderId) folderId = await ensureFolder();
+  if (!confirm('This will replace all local data with your Drive backup. Continue?')) return;
+  const btn = document.getElementById('restore-btn');
+  btn.disabled = true;
+  try {
+    setProgress('Reading Drive…', 0);
+    const q = `'${folderId}' in parents and trashed=false`;
+    const list = await driveGet(`${DRIVE}/files?q=${encodeURIComponent(q)}&fields=files(id,name)`);
+    const allDriveFiles = list.files || [];
+    const notesFile = allDriveFiles.find(f => f.name === '_gvault_notes.json');
+    const manifestFile = allDriveFiles.find(f => f.name === '_gvault_manifest.json');
+    if (!notesFile && !manifestFile) { toast('No backup found on Drive', 'err'); hideProgress(); btn.disabled = false; return; }
 
-    if(notesFile){
-      prog('Restoring notes…',5);
-      const nb=await downloadFromDrive(notesFile.id,'application/json');
-      const ns=JSON.parse(await nb.text());
-      for(const n of ns)await qAd('notes',{title:n.title,content:n.content,date:n.date});
-      notes=await qA('notes');
+    await dbClear('files'); await dbClear('notes');
+    files = []; notes = [];
+
+    if (notesFile) {
+      setProgress('Restoring notes…', 5);
+      const blob = await downloadDriveFile(notesFile.id, 'application/json');
+      const notesList = JSON.parse(await blob.text());
+      for (const n of notesList) await dbAdd('notes', { title: n.title, content: n.content, date: n.date });
+      notes = await dbGetAll('notes');
     }
-    if(filesManifest){
-      const mb=await downloadFromDrive(filesManifest.id,'application/json');
-      const meta=JSON.parse(await mb.text());
-      let done=0;
-      for(const m of meta){
-        prog(`Downloading: ${m.name}`,10+(done/Math.max(meta.length,1))*90);
-        try{
-          const blob=await downloadFromDrive(m.driveId,m.type);
-          await qAd('files',{name:m.name,type:m.type,cat:m.cat,size:m.size,date:m.date,blob,driveId:m.driveId});
-        }catch(e){console.warn('Could not restore:',m.name,e);}
+
+    if (manifestFile) {
+      const mBlob = await downloadDriveFile(manifestFile.id, 'application/json');
+      const meta = JSON.parse(await mBlob.text());
+      let done = 0;
+      for (const m of meta) {
+        setProgress(`Downloading: ${m.name}`, 10 + done / Math.max(meta.length, 1) * 90);
+        try {
+          const blob = await downloadDriveFile(m.driveId, m.type);
+          await dbAdd('files', { name: m.name, type: m.type, cat: m.cat, size: m.size, date: m.date, blob, driveId: m.driveId });
+        } catch (e) { console.warn('Skipped:', m.name, e); }
         done++;
       }
     }
-    files=await qA('files');
-    renderFiles();renderNotes();refreshCounts();
-    prog('Restore complete!',100);hideProg();updateBStats();updateQuotaDisplay();
-    toast('Restore complete!','ok');
-  }catch(e){toast('Restore failed: '+e.message,'err');console.error(e);hideProg();files=await qA('files');notes=await qA('notes');renderFiles();renderNotes();}
-  finally{btn.disabled=false;}
+
+    files = await dbGetAll('files');
+    renderFiles(); renderNotes(); refreshCounts();
+    setProgress('Restore complete! ✓', 100);
+    hideProgress(); updateCloudStats();
+    toast('Restore complete ✓', 'ok');
+  } catch (e) {
+    toast('Restore failed: ' + e.message, 'err'); console.error(e); hideProgress();
+    files = await dbGetAll('files'); notes = await dbGetAll('notes');
+    renderFiles(); renderNotes();
+  } finally { btn.disabled = false; }
 }
 
-// ─── Helpers ───────────────────────────────
-function prog(lbl,pct){
-  document.getElementById('pw').style.display='block';
-  document.getElementById('pl').textContent=lbl;
-  document.getElementById('pp').textContent=Math.round(pct)+'%';
-  document.getElementById('pf').style.width=Math.round(pct)+'%';
-}
-function hideProg(){setTimeout(()=>{document.getElementById('pw').style.display='none';document.getElementById('pf').style.width='0%';},2000);}
-
-const TITLES={all:'All Files',photos:'Photos',videos:'Videos',docs:'Documents',html:'HTML Files',other:'Other Files',notes:'Notes',cloud:'Cloud & Setup'};
-function navigate(s){
-  sec=s;
-  document.querySelectorAll('.ni').forEach(el=>el.classList.toggle('on',el.dataset.s===s));
-  document.getElementById('pg-title').textContent=TITLES[s]||s;
-  document.getElementById('s-files').classList.toggle('hidden',!FILE_SECS.includes(s));
-  document.getElementById('s-notes').classList.toggle('hidden',s!=='notes');
-  document.getElementById('s-cloud').classList.toggle('hidden',s!=='cloud');
-  document.getElementById('add-btn').classList.toggle('hidden',s==='notes'||s==='cloud');
-  document.getElementById('note-btn').classList.toggle('hidden',s!=='notes');
-  document.getElementById('vsw').classList.toggle('hidden',!FILE_SECS.includes(s));
-  document.getElementById('srch-w').classList.toggle('hidden',s==='cloud');
-  if(s==='cloud')updateBStats();
-  if(FILE_SECS.includes(s))renderFiles();
-  // Load client ID in settings
-  if(s==='cloud'){const cid=localStorage.getItem('gvault_cid')||'';document.getElementById('cid-inp').value=cid;}
-}
-function onQ(v){q=v;renderFiles();}
-function setV(v){view=v;document.getElementById('vg').classList.toggle('on',v==='grid');document.getElementById('vl').classList.toggle('on',v==='list');renderFiles();}
-function refreshCounts(){
-  ['photos','videos','docs','html','other'].forEach(c=>document.getElementById('nb-'+c).textContent=files.filter(f=>f.cat===c).length);
-  document.getElementById('nb-all').textContent=files.length;
-  document.getElementById('nb-notes').textContent=notes.length;
-}
-async function updateBStats(){
-  document.getElementById('bs-f').textContent=files.length;
-  document.getElementById('bs-s').textContent=fmtSz(files.reduce((s,f)=>s+(f.size||0),0));
-  document.getElementById('bs-n').textContent=notes.length;
-  try{const lb=await qG('cfg','lastSync');document.getElementById('bs-lb').textContent=lb?.v?new Date(lb.v).toLocaleDateString():'—';}catch(e){}
-}
-function setupDrop(){
-  const dz=document.getElementById('dz');
-  dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('ov');});
-  dz.addEventListener('dragleave',()=>dz.classList.remove('ov'));
-  dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('ov');if(e.dataTransfer.files.length)onFiles({target:{files:e.dataTransfer.files}});});
-  document.addEventListener('dragover',e=>e.preventDefault());
-  document.addEventListener('drop',e=>{if(e.target.closest('#dz'))return;e.preventDefault();if(e.dataTransfer.files.length)onFiles({target:{files:e.dataTransfer.files}});});
-}
-function askClear(){document.getElementById('mo-clr').classList.remove('hidden');}
-async function clearAll(){
-  await qCl('files');await qCl('notes');files=[];notes=[];noteId=null;
-  document.getElementById('mo-clr').classList.add('hidden');
-  document.getElementById('ned').classList.add('hidden');
-  document.getElementById('n-idle').classList.remove('hidden');
-  renderFiles();renderNotes();refreshCounts();toast('Local data cleared — Drive backup is safe','inf');
-}
-function dlApp(){
-  const src='<!DOCTYPE html>'+document.documentElement.outerHTML;
-  const blob=new Blob([src],{type:'text/html'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');a.href=url;a.download='gvault.html';a.click();
-  setTimeout(()=>URL.revokeObjectURL(url),3000);
-  toast('gvault.html saved!','ok');
-}
-function toast(msg,type='inf'){
-  const c=document.getElementById('toasts');
-  const t=document.createElement('div');t.className=`toast ${type}`;
-  t.innerHTML=`<div class="tdot"></div>${esc(msg)}`;c.appendChild(t);
-  setTimeout(()=>t.remove(),3500);
+function setProgress(label, pct) {
+  document.getElementById('prog-box').style.display = 'block';
+  document.getElementById('prog-label').textContent = label;
+  document.getElementById('prog-pct').textContent = Math.round(pct) + '%';
+  document.getElementById('prog-fill').style.width = Math.round(pct) + '%';
 }
 
-// ─── Nav wiring ────────────────────────────
-document.querySelectorAll('.ni').forEach(el=>el.addEventListener('click',()=>navigate(el.dataset.s)));
+function hideProgress() {
+  setTimeout(() => {
+    document.getElementById('prog-box').style.display = 'none';
+    document.getElementById('prog-fill').style.width = '0%';
+  }, 2000);
+}
 
-// ─── Auto-load if offline mode ─────────────
-window.addEventListener('load',()=>{
-  setTimeout(()=>{
-    if(!gsiLoaded){
-      toast('Google auth loading… if stuck, use "Skip" for offline mode','inf');
-    }
-  },3000);
+async function updateCloudStats() {
+  document.getElementById('stat-files').textContent = files.length;
+  document.getElementById('stat-size').textContent = formatSize(files.reduce((s, f) => s + (f.size || 0), 0));
+  document.getElementById('stat-notes').textContent = notes.length;
+  try {
+    const lb = await dbGet('meta', 'lastBackup');
+    document.getElementById('stat-backup').textContent = lb?.value ? new Date(lb.value).toLocaleDateString() : '—';
+  } catch (e) {}
+}
+
+// ═══════════════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════════════
+const TITLES = { all: 'All Files', photos: 'Photos', videos: 'Videos', docs: 'Documents', html: 'HTML Files', other: 'Other Files', notes: 'Notes', cloud: 'Cloud & Setup' };
+
+function goTo(sec) { navigate(sec); }
+
+function navigate(sec) {
+  currentSection = sec;
+  document.querySelectorAll('.ni').forEach(el => el.classList.toggle('on', el.dataset.sec === sec));
+  document.getElementById('page-title').textContent = TITLES[sec] || sec;
+
+  const isFiles = FILE_SECTIONS.includes(sec);
+  document.getElementById('sec-files').classList.toggle('hidden', !isFiles);
+  document.getElementById('sec-notes').classList.toggle('hidden', sec !== 'notes');
+  document.getElementById('sec-cloud').classList.toggle('hidden', sec !== 'cloud');
+  document.getElementById('add-files-btn').classList.toggle('hidden', sec === 'notes' || sec === 'cloud');
+  document.getElementById('new-note-btn').classList.toggle('hidden', sec !== 'notes');
+  document.getElementById('view-btns').classList.toggle('hidden', !isFiles);
+  document.getElementById('search-wrap').classList.toggle('hidden', sec === 'cloud');
+
+  if (sec === 'cloud') {
+    updateCloudStats();
+    document.getElementById('settings-cid').value = localStorage.getItem(LS.CID) || '';
+  }
+  if (isFiles) renderFiles();
+}
+
+function onSearch(val) { searchQuery = val; renderFiles(); }
+
+function setView(v) {
+  currentView = v;
+  document.getElementById('btn-grid').classList.toggle('active', v === 'grid');
+  document.getElementById('btn-list').classList.toggle('active', v === 'list');
+  renderFiles();
+}
+
+function refreshCounts() {
+  ['photos', 'videos', 'docs', 'html', 'other'].forEach(c =>
+    document.getElementById(`nb-${c}`).textContent = files.filter(f => f.cat === c).length
+  );
+  document.getElementById('nb-all').textContent = files.length;
+  document.getElementById('nb-notes').textContent = notes.length;
+}
+
+// ═══════════════════════════════════════════════════════
+//  DRAG & DROP
+// ═══════════════════════════════════════════════════════
+function setupDragDrop() {
+  const dz = document.getElementById('dropzone');
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('drag'));
+  dz.addEventListener('drop', e => {
+    e.preventDefault(); dz.classList.remove('drag');
+    if (e.dataTransfer.files.length) handleFiles({ target: { files: e.dataTransfer.files } });
+  });
+  document.addEventListener('dragover', e => e.preventDefault());
+  document.addEventListener('drop', e => {
+    if (e.target.closest('#dropzone')) return;
+    e.preventDefault();
+    if (e.dataTransfer.files.length) handleFiles({ target: { files: e.dataTransfer.files } });
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+//  UTILITIES
+// ═══════════════════════════════════════════════════════
+function confirmClearAll() { document.getElementById('clear-modal').classList.remove('hidden'); }
+
+async function executeClearAll() {
+  await dbClear('files'); await dbClear('notes');
+  files = []; notes = []; activeNoteId = null;
+  closeModal('clear-modal');
+  document.getElementById('note-active').classList.add('hidden');
+  document.getElementById('note-idle').classList.remove('hidden');
+  renderFiles(); renderNotes(); refreshCounts();
+  toast('All local data cleared · Drive backup is safe', 'info');
+}
+
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+function downloadApp() {
+  const src = '<!DOCTYPE html>' + document.documentElement.outerHTML;
+  const blob = new Blob([src], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'gvault.html'; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 3000);
+  toast('gvault.html downloaded!', 'ok');
+}
+
+function toast(message, type = 'info') {
+  const container = document.getElementById('toasts');
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<div class="toast-dot"></div>${escape(message)}`;
+  container.appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+// Wire up nav
+document.querySelectorAll('.ni').forEach(el => {
+  el.addEventListener('click', () => navigate(el.dataset.sec));
 });
+
+// Fallback timeout
+setTimeout(() => {
+  if (!gsiReady && document.getElementById('splash').style.display !== 'none') {
+    showLogin('Could not reach Google — using offline mode');
+  }
+}, 8000);
 </script>
 </body>
 </html>
